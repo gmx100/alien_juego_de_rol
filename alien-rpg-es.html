@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIEN RPG — INTERFAZ M.O.T.H.E.R.</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap');
+
+  :root {
+    --green: #00ff41;
+    --green-dim: #00aa2a;
+    --green-faint: #003310;
+    --amber: #ff9500;
+    --red: #ff2200;
+    --blood: #8b0000;
+    --dark: #020a04;
+    --darker: #010502;
+    --panel: #030d05;
+    --border: #00551a;
+    --text: #00cc33;
+    --text-dim: #007a1f;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--darker);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image: 
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.015) 2px, rgba(0,255,65,0.015) 4px);
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(0,30,10,0.3) 0%, rgba(1,5,2,0.8) 100%);
+    pointer-events: none; z-index: 1000;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 1px, transparent 1px, transparent 3px);
+    pointer-events: none; z-index: 1001;
+    animation: flicker 8s infinite;
+  }
+
+  @keyframes flicker {
+    0%,100% { opacity: 1; }
+    92% { opacity: 1; }
+    93% { opacity: 0.85; }
+    94% { opacity: 1; }
+    96% { opacity: 0.9; }
+    97% { opacity: 1; }
+  }
+
+  @keyframes pulse-border {
+    0%,100% { box-shadow: 0 0 5px var(--green-dim), inset 0 0 5px rgba(0,255,65,0.05); }
+    50% { box-shadow: 0 0 15px var(--green-dim), inset 0 0 10px rgba(0,255,65,0.1); }
+  }
+
+  @keyframes blink { 0%,49%{opacity:1}50%,100%{opacity:0} }
+  @keyframes typeIn { from{width:0} to{width:100%} }
+  @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+  @keyframes diceRoll {
+    0%{transform:rotate(0deg) scale(1)}
+    25%{transform:rotate(90deg) scale(1.2)}
+    50%{transform:rotate(180deg) scale(0.9)}
+    75%{transform:rotate(270deg) scale(1.1)}
+    100%{transform:rotate(360deg) scale(1)}
+  }
+  @keyframes xenoReveal {
+    0%{opacity:0;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.05)} 100%{transform:scale(1)}
+  }
+
+  header {
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+    position: relative;
+  }
+
+  header::after {
+    content: '◈ WEYLAND-YUTANI CORP ◈ CLASIFICADO ◈';
+    position: absolute; bottom: 4px; right: 10px;
+    font-size: 9px; color: var(--text-dim); letter-spacing: 2px;
+  }
+
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(20px, 4vw, 38px);
+    font-weight: 900;
+    letter-spacing: 8px;
+    color: var(--green);
+    text-shadow: 0 0 20px var(--green), 0 0 40px rgba(0,255,65,0.3);
+  }
+
+  .subtitle {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    color: var(--amber);
+    letter-spacing: 4px;
+    margin-top: 4px;
+    text-shadow: 0 0 10px var(--amber);
+  }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr 280px;
+    grid-template-rows: auto 1fr auto;
+    gap: 2px;
+    min-height: calc(100vh - 90px);
+    padding: 2px;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    animation: pulse-border 4s infinite;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .panel::before {
+    content: attr(data-label);
+    position: absolute; top: 0; left: 0; right: 0;
+    background: var(--green-faint);
+    border-bottom: 1px solid var(--border);
+    padding: 4px 10px;
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--green-dim);
+  }
+
+  .panel-content { padding: 30px 10px 10px; }
+
+  #char-panel { grid-row: span 2; }
+
+  .char-name-display {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--green);
+    text-shadow: 0 0 10px var(--green);
+    margin-bottom: 2px;
+  }
+
+  .char-meta { font-size: 11px; color: var(--text-dim); margin-bottom: 10px; line-height: 1.6; }
+
+  .section-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--green-dim);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 3px;
+    margin: 10px 0 6px;
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(0,85,26,0.3);
+    font-size: 12px;
+  }
+
+  .stat-name { color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; font-size: 11px; }
+
+  .stat-dots { display: flex; gap: 3px; }
+
+  .dot {
+    width: 10px; height: 10px;
+    border: 1px solid var(--green-dim);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .dot.filled { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .dot.damaged { background: var(--red); border-color: var(--red); box-shadow: 0 0 6px var(--red); }
+
+  .stress-bar { display: flex; gap: 2px; flex-wrap: wrap; margin-top: 4px; }
+
+  .stress-pip {
+    width: 12px; height: 12px;
+    border: 1px solid var(--amber);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .stress-pip.active { background: var(--amber); box-shadow: 0 0 8px var(--amber); }
+
+  .hp-display {
+    display: flex; justify-content: space-between;
+    align-items: center;
+    background: rgba(0,255,65,0.05);
+    border: 1px solid var(--border);
+    padding: 6px 8px;
+    margin: 4px 0;
+    border-radius: 2px;
+  }
+
+  .hp-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .hp-num.healthy { color: var(--green); text-shadow: 0 0 10px var(--green); }
+  .hp-num.wounded { color: var(--amber); text-shadow: 0 0 10px var(--amber); }
+  .hp-num.critical { color: var(--red); text-shadow: 0 0 10px var(--red); animation: shake 0.5s infinite; }
+
+  .hp-controls { display: flex; gap: 4px; }
+
+  .hp-btn {
+    background: var(--green-faint);
+    border: 1px solid var(--border);
+    color: var(--green);
+    width: 24px; height: 24px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    transition: all 0.2s;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .hp-btn:hover { background: rgba(0,255,65,0.2); box-shadow: 0 0 8px var(--green); }
+
+  .inventory-item {
+    background: rgba(0,255,65,0.03);
+    border: 1px solid rgba(0,85,26,0.5);
+    padding: 4px 8px;
+    margin: 2px 0;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; justify-content: space-between;
+  }
+
+  .inventory-item:hover { background: rgba(0,255,65,0.08); border-color: var(--green-dim); }
+
+  #game-panel { grid-column: 2; }
+
+  .mother-output {
+    height: 340px;
+    overflow-y: auto;
+    padding: 8px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    scroll-behavior: smooth;
+  }
+
+  .mother-output::-webkit-scrollbar { width: 4px; }
+  .mother-output::-webkit-scrollbar-track { background: var(--dark); }
+  .mother-output::-webkit-scrollbar-thumb { background: var(--green-dim); }
+
+  .msg {
+    margin-bottom: 10px;
+    animation: slideUp 0.3s ease;
+    line-height: 1.6;
+    font-size: 13px;
+  }
+
+  .msg-mother {
+    color: var(--green);
+    border-left: 2px solid var(--green);
+    padding-left: 8px;
+  }
+
+  .msg-mother::before {
+    content: 'M.O.T.H.E.R. ▶ ';
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    color: var(--green-dim);
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .msg-player {
+    color: var(--amber);
+    text-align: right;
+    border-right: 2px solid var(--amber);
+    padding-right: 8px;
+  }
+
+  .msg-player::after {
+    content: ' ▶ TÚ';
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    color: var(--amber);
+    opacity: 0.7;
+  }
+
+  .msg-system {
+    color: var(--text-dim);
+    font-size: 11px;
+    text-align: center;
+    border: 1px solid rgba(0,85,26,0.3);
+    padding: 3px;
+  }
+
+  .msg-danger {
+    color: var(--red);
+    border-left: 2px solid var(--red);
+    padding-left: 8px;
+    text-shadow: 0 0 5px rgba(255,34,0,0.5);
+  }
+
+  .msg-danger::before {
+    content: '⚠ ALERTA ▶ ';
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .choice-container {
+    display: flex; flex-direction: column; gap: 4px;
+    margin: 8px 0;
+  }
+
+  .choice-btn {
+    background: var(--green-faint);
+    border: 1px solid var(--border);
+    color: var(--green);
+    padding: 8px 12px;
+    cursor: pointer;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    text-align: left;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .choice-btn::before { content: '▶ '; color: var(--green-dim); }
+
+  .choice-btn:hover {
+    background: rgba(0,255,65,0.12);
+    border-color: var(--green);
+    box-shadow: 0 0 10px rgba(0,255,65,0.2);
+    transform: translateX(4px);
+  }
+
+  .custom-input-area { display: flex; gap: 4px; margin-top: 4px; }
+
+  .custom-input {
+    flex: 1;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid var(--border);
+    color: var(--green);
+    padding: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .custom-input:focus { border-color: var(--green); box-shadow: 0 0 8px rgba(0,255,65,0.2); }
+  .custom-input::placeholder { color: var(--text-dim); }
+
+  .send-btn {
+    background: var(--green-faint);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    transition: all 0.2s;
+  }
+
+  .send-btn:hover { background: rgba(0,255,65,0.2); box-shadow: 0 0 12px var(--green); }
+
+  #dice-panel { grid-column: 2; padding: 10px; }
+
+  .dice-area { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 5px; }
+
+  .die {
+    width: 48px; height: 48px;
+    border: 2px solid var(--green-dim);
+    background: var(--green-faint);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 4px;
+    position: relative;
+  }
+
+  .die:hover { border-color: var(--green); box-shadow: 0 0 15px rgba(0,255,65,0.4); }
+  .die.rolling { animation: diceRoll 0.5s ease; }
+  .die.success { color: var(--green); border-color: var(--green); box-shadow: 0 0 12px var(--green); }
+  .die.push { color: var(--amber); border-color: var(--amber); box-shadow: 0 0 12px var(--amber); }
+  .die.alien { color: var(--red); border-color: var(--red); box-shadow: 0 0 12px var(--red); font-size: 14px; }
+
+  .die-label { font-size: 8px; position: absolute; bottom: 2px; right: 3px; color: var(--text-dim); font-family: 'Share Tech Mono', monospace; }
+
+  .dice-controls { display: flex; gap: 6px; align-items: center; margin: 6px 0; flex-wrap: wrap; }
+
+  .dice-ctrl-btn {
+    background: var(--green-faint);
+    border: 1px solid var(--border);
+    color: var(--green);
+    padding: 5px 10px;
+    cursor: pointer;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    transition: all 0.2s;
+  }
+
+  .dice-ctrl-btn:hover { background: rgba(0,255,65,0.15); border-color: var(--green); }
+  .dice-ctrl-btn.stress-die { border-color: var(--amber); color: var(--amber); }
+  .dice-ctrl-btn.stress-die:hover { background: rgba(255,149,0,0.15); }
+
+  .roll-result {
+    padding: 6px 10px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    font-size: 12px;
+    min-height: 36px;
+  }
+
+  #info-panel { grid-row: span 3; }
+
+  .xeno-ascii {
+    color: var(--blood);
+    font-size: 9px;
+    line-height: 1.2;
+    text-align: center;
+    padding: 8px 4px;
+    text-shadow: 0 0 8px var(--blood);
+    font-family: 'Share Tech Mono', monospace;
+    white-space: pre;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+
+  .xeno-ascii:hover { opacity: 1; }
+
+  .attack-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+    margin-top: 4px;
+  }
+
+  .attack-table th {
+    background: rgba(139,0,0,0.3);
+    color: var(--red);
+    padding: 4px;
+    text-align: left;
+    border: 1px solid rgba(139,0,0,0.5);
+    font-family: 'Orbitron', monospace;
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+
+  .attack-table td {
+    padding: 3px 4px;
+    border: 1px solid rgba(0,85,26,0.3);
+    color: var(--text-dim);
+    vertical-align: top;
+  }
+
+  .attack-table tr:hover td { background: rgba(139,0,0,0.1); color: var(--text); }
+
+  .attack-roll-result {
+    background: rgba(139,0,0,0.2);
+    border: 1px solid var(--blood);
+    padding: 6px;
+    margin-top: 6px;
+    color: var(--red);
+    font-size: 11px;
+    display: none;
+    animation: xenoReveal 0.5s ease;
+  }
+
+  .encounter-indicator {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    margin-bottom: 6px;
+    font-size: 11px;
+  }
+
+  .threat-light {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse-border 2s infinite;
+    flex-shrink: 0;
+  }
+
+  .threat-light.elevated { background: var(--amber); box-shadow: 0 0 8px var(--amber); }
+  .threat-light.critical { background: var(--red); box-shadow: 0 0 8px var(--red); animation: blink 0.5s infinite; }
+
+  #setup-screen {
+    position: fixed; inset: 0;
+    background: var(--darker);
+    z-index: 500;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+
+  .setup-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    max-width: 600px; width: 100%;
+    padding: 30px;
+    box-shadow: 0 0 40px rgba(0,255,65,0.1);
+    animation: slideUp 0.5s ease;
+  }
+
+  .setup-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(16px,3vw,28px);
+    font-weight: 900;
+    color: var(--green);
+    text-shadow: 0 0 20px var(--green);
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  .setup-sub {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 12px;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .form-row.single { grid-template-columns: 1fr; }
+
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+
+  .form-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--green-dim);
+  }
+
+  .form-input, .form-select {
+    background: rgba(0,0,0,0.5);
+    border: 1px solid var(--border);
+    color: var(--green);
+    padding: 7px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-input:focus, .form-select:focus { border-color: var(--green); box-shadow: 0 0 8px rgba(0,255,65,0.2); }
+  .form-select option { background: var(--dark); }
+
+  .stat-setup { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-bottom: 12px; }
+
+  .stat-setup-item { text-align: center; }
+  .stat-setup-name { font-size: 9px; color: var(--text-dim); margin-bottom: 2px; font-family: 'Orbitron', monospace; letter-spacing: 1px; }
+  .stat-setup-val { display: flex; align-items: center; justify-content: center; gap: 4px; }
+  .stat-num { font-family: 'Orbitron', monospace; font-size: 18px; font-weight: 700; color: var(--green); min-width: 20px; text-align: center; }
+  .stat-adj { background: none; border: 1px solid var(--border); color: var(--text-dim); width: 18px; height: 18px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-family: 'Share Tech Mono',monospace; }
+  .stat-adj:hover { border-color: var(--green); color: var(--green); }
+
+  .stat-points { text-align: center; font-size: 12px; color: var(--amber); margin-bottom: 10px; }
+
+  .start-btn {
+    width: 100%;
+    background: var(--green-faint);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 14px;
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 12px;
+  }
+
+  .start-btn:hover {
+    background: rgba(0,255,65,0.15);
+    box-shadow: 0 0 30px rgba(0,255,65,0.3);
+    letter-spacing: 6px;
+  }
+
+  .start-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .scenario-card {
+    border: 1px solid var(--border);
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(0,0,0,0.3);
+    font-size: 11px;
+  }
+
+  .scenario-card:hover, .scenario-card.selected { border-color: var(--green); background: rgba(0,255,65,0.06); }
+  .scenario-card .sc-title { font-family: 'Orbitron', monospace; font-size: 11px; color: var(--green); margin-bottom: 2px; }
+  .scenario-card .sc-desc { color: var(--text-dim); font-size: 10px; }
+
+  .scenarios-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
+
+  .thinking {
+    display: inline-flex; gap: 4px; align-items: center;
+    color: var(--text-dim); font-size: 11px;
+  }
+
+  .thinking span {
+    width: 6px; height: 6px;
+    background: var(--green-dim);
+    border-radius: 50%;
+    animation: blink 1s infinite;
+  }
+
+  .thinking span:nth-child(2) { animation-delay: 0.3s; }
+  .thinking span:nth-child(3) { animation-delay: 0.6s; }
+
+  .cursor { animation: blink 1s infinite; }
+
+  .wound-card {
+    background: rgba(139,0,0,0.15);
+    border: 1px solid var(--blood);
+    padding: 6px;
+    margin: 3px 0;
+    font-size: 11px;
+    color: var(--red);
+  }
+
+  .push-btn {
+    background: rgba(255,149,0,0.1);
+    border: 1px solid var(--amber);
+    color: var(--amber);
+    padding: 5px 10px;
+    cursor: pointer;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    margin-top: 4px;
+    transition: all 0.2s;
+  }
+
+  .push-btn:hover { background: rgba(255,149,0,0.2); box-shadow: 0 0 8px var(--amber); }
+
+  .panic-result {
+    background: rgba(255,34,0,0.15);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 8px;
+    margin: 4px 0;
+    font-size: 12px;
+    animation: xenoReveal 0.5s ease;
+  }
+
+  @media (max-width: 900px) {
+    .main-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+    #char-panel { grid-row: auto; }
+    #info-panel { grid-row: auto; }
+    .mother-output { height: 250px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ PANTALLA DE INICIO ══ -->
+<div id="setup-screen">
+  <div class="setup-box">
+    <div class="setup-title">◈ A L I E N ◈</div>
+    <div class="setup-sub">RPG DE MESA — INTERFAZ SOLITARIO v2.4.1 — M.O.T.H.E.R. EN LÍNEA</div>
+
+    <div class="section-label" style="margin-top:0">SELECCIONAR ESCENARIO</div>
+    <div class="scenarios-grid">
+      <div class="scenario-card selected" data-scenario="station" onclick="selectScenario(this,'station')">
+        <div class="sc-title">ESTACIÓN MUERTA</div>
+        <div class="sc-desc">Misión de salvamento a una estación de investigación en silencio. Algo va muy mal. Sin señal de socorro.</div>
+      </div>
+      <div class="scenario-card" data-scenario="colony" onclick="selectScenario(this,'colony')">
+        <div class="sc-title">COLONIA PERDIDA</div>
+        <div class="sc-desc">Una colonia de terraformación ha desaparecido del radar. Te envían a investigar. Último reporte: gritos.</div>
+      </div>
+      <div class="scenario-card" data-scenario="ship" onclick="selectScenario(this,'ship')">
+        <div class="sc-title">A LA DERIVA</div>
+        <div class="sc-desc">Tu nave sale del hipersueño antes de tiempo. La tripulación está muerta. Estás solo. Algo abordó la nave.</div>
+      </div>
+      <div class="scenario-card" data-scenario="escape" onclick="selectScenario(this,'escape')">
+        <div class="sc-title">HUIDA DESESPERADA</div>
+        <div class="sc-desc">Instalación tomada. Tienes 3 horas antes del bombardeo orbital. Llega a la nave de descenso.</div>
+      </div>
+    </div>
+
+    <div class="section-label">CREACIÓN DE PERSONAJE</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">NOMBRE</label>
+        <input class="form-input" id="char-name" placeholder="Nombre Apellido" value="Elena Reyes">
+      </div>
+      <div class="form-group">
+        <label class="form-label">PROFESIÓN</label>
+        <select class="form-select" id="char-career">
+          <option value="Marine Colonial">Marine Colonial</option>
+          <option value="Trabajador Pesado">Trabajador Pesado</option>
+          <option value="Agente Corporativo">Agente Corporativo</option>
+          <option value="Médico">Médico</option>
+          <option value="Piloto">Piloto</option>
+          <option value="Androide">Androide</option>
+          <option value="Científico">Científico</option>
+          <option value="Colono">Colono</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">AGENDA PERSONAL</label>
+        <input class="form-input" id="char-agenda" placeholder="ej. Encontrar a mi hermana desaparecida">
+      </div>
+      <div class="form-group">
+        <label class="form-label">ALIADO / RIVAL</label>
+        <input class="form-input" id="char-buddy" placeholder="Alguien en quien confías — o no">
+      </div>
+    </div>
+
+    <div class="section-label">ATRIBUTOS — Distribuye 14 Puntos (mín 2, máx 5)</div>
+    <div class="stat-points">Puntos Restantes: <span id="pts-left">6</span></div>
+    <div class="stat-setup" id="stat-setup"></div>
+
+    <div class="section-label">PUNTOS DE HABILIDAD — Distribuye 10 Puntos (máx 3 por habilidad)</div>
+    <div id="skill-setup" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;"></div>
+    <div class="stat-points">Puntos de Habilidad Restantes: <span id="skill-pts-left">10</span></div>
+
+    <button class="start-btn" onclick="startGame()">◈ INICIALIZAR MISIÓN ◈</button>
+  </div>
+</div>
+
+<!-- ══ INTERFAZ PRINCIPAL ══ -->
+<header>
+  <div class="logo">A L I E N</div>
+  <div class="subtitle">INTERFAZ M.O.T.H.E.R. ◈ WEYLAND-YUTANI CORP</div>
+</header>
+
+<div class="main-grid">
+  <!-- Ficha de Personaje -->
+  <div class="panel" data-label="REGISTRO DE TRIPULACIÓN — FICHA DE CAMPO" id="char-panel">
+    <div class="panel-content">
+      <div class="char-name-display" id="display-name">—</div>
+      <div class="char-meta" id="display-meta">Profesión: — | Sesión: 0</div>
+
+      <div class="section-label">ATRIBUTOS</div>
+      <div id="attr-display"></div>
+
+      <div class="section-label">HABILIDADES</div>
+      <div id="skills-display"></div>
+
+      <div class="section-label">CONDICIÓN</div>
+      <div class="hp-display">
+        <div>
+          <div style="font-size:10px;color:var(--text-dim);margin-bottom:2px;">SALUD</div>
+          <div class="hp-num healthy" id="hp-display">—</div>
+        </div>
+        <div class="hp-controls">
+          <button class="hp-btn" onclick="changeHP(-1)">−</button>
+          <button class="hp-btn" onclick="changeHP(1)">+</button>
+        </div>
+      </div>
+
+      <div style="font-size:10px;color:var(--text-dim);margin-bottom:3px;margin-top:4px;">NIVEL DE ESTRÉS<span style="float:right;color:var(--amber);" id="stress-num">0</span></div>
+      <div class="stress-bar" id="stress-bar"></div>
+
+      <div id="wounds-list"></div>
+
+      <div class="section-label">INVENTARIO</div>
+      <div id="inventory-display"></div>
+    </div>
+  </div>
+
+  <!-- Pantalla de Juego -->
+  <div class="panel" data-label="M.O.T.H.E.R. — REGISTRO DE MISIÓN" id="game-panel">
+    <div class="panel-content" style="display:flex;flex-direction:column;height:100%;">
+      <div class="mother-output" id="output"></div>
+      <div id="choices-area"></div>
+      <div class="custom-input-area">
+        <input class="custom-input" id="player-input" placeholder="O escribe tu propia acción..." onkeydown="if(event.key==='Enter')sendCustom()">
+        <button class="send-btn" onclick="sendCustom()">TRANSMITIR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel de Dados -->
+  <div class="panel" data-label="SISTEMA DE DADOS — BASE / ESTRÉS" id="dice-panel" style="grid-column:2;">
+    <div style="padding:5px;">
+      <div class="dice-controls">
+        <span style="font-size:11px;color:var(--text-dim);">DADOS BASE:</span>
+        <button class="dice-ctrl-btn" onclick="addDie('base')">+ D6</button>
+        <button class="dice-ctrl-btn stress-die" onclick="addDie('stress')">+ D6 ESTRÉS</button>
+        <button class="dice-ctrl-btn" onclick="rollAllDice()">◈ TIRAR</button>
+        <button class="dice-ctrl-btn" onclick="pushRoll()" id="push-btn" style="display:none">↑ FORZAR</button>
+        <button class="dice-ctrl-btn" onclick="clearDice()" style="color:var(--text-dim)">LIMPIAR</button>
+      </div>
+      <div class="dice-area" id="dice-area"></div>
+      <div class="roll-result" id="roll-result">No se han tirado dados.</div>
+    </div>
+  </div>
+
+  <!-- Panel de Información Derecho -->
+  <div class="panel" data-label="DATOS XENOMORFO — CLASIFICADO" id="info-panel">
+    <div class="panel-content">
+      <div class="xeno-ascii">
+  ▓▓▓▒▒░░░░░▒▒▓▓▓
+ ▓▓  /▓▓▓▓▓▓▓\  ▓▓
+▓▓  /▓/  ██  \▓\  ▓▓
+▓▓ |▓| ▓▓▓▓▓▓ |▓| ▓▓
+ ▓▓\ \▓\▓▓▓▓▓/▓/ /▓▓
+  ▓▓▓▓▓▓████▓▓▓▓▓▓
+   ▓ ████████████ ▓
+     ▓▓▓▓▓▓▓▓▓▓▓▓
+      ▓▓▓▓▓▓▓▓▓▓
+   ▀██▀▀█▓▓▓▓█▀▀██▀
+  ▀       ▓▓▓       ▀</div>
+
+      <div class="encounter-indicator">
+        <div class="threat-light" id="threat-light"></div>
+        <span id="threat-text" style="font-size:11px;color:var(--text-dim);">AMENAZA: MÍNIMA</span>
+      </div>
+
+      <div class="section-label">TABLA DE ATAQUES XENOMORFO</div>
+      <table class="attack-table" id="attack-table">
+        <tr>
+          <th>D6</th>
+          <th>ATAQUE</th>
+          <th>EFECTO</th>
+        </tr>
+      </table>
+
+      <div style="margin-top:6px;display:flex;gap:4px;">
+        <button class="dice-ctrl-btn" style="flex:1;border-color:var(--blood);color:var(--red)" onclick="rollXenoAttack()">⚠ ATAQUE XENO</button>
+      </div>
+
+      <div class="attack-roll-result" id="attack-result"></div>
+
+      <div class="section-label">TABLA DE PÁNICO</div>
+      <div style="font-size:10px;color:var(--text-dim);line-height:1.7;">
+        1-6: Te mantienes firme<br>
+        7: ¡Paralizado! (pierde acción)<br>
+        8: ¡Gritas! (+1 estrés a todos)<br>
+        9: ¡Pánico! (huyes de la amenaza)<br>
+        10: Catatónico (destrozado)<br>
+        11: ¡Berserker! (atacas al más cercano)<br>
+        12+: Ataque al corazón
+      </div>
+
+      <div style="margin-top:6px;">
+        <button class="dice-ctrl-btn stress-die" style="width:100%" onclick="rollPanic()">CHEQUEO DE PÁNICO</button>
+      </div>
+      <div id="panic-result"></div>
+
+      <div class="section-label">SECUENCIA DE TURNO</div>
+      <div style="font-size:10px;color:var(--text-dim);line-height:1.8;">
+        1. ACCIÓN LENTA (mover/objeto)<br>
+        2. ACCIÓN RÁPIDA (atacar/esquivar)<br>
+        3. TIRAR DADOS BASE (atr+hab)<br>
+        4. CONTAR ✦ = éxitos<br>
+        5. ☠ en dado estrés = PÁNICO
+      </div>
+
+      <div class="section-label">CONDICIONES</div>
+      <div style="font-size:10px;color:var(--text-dim);line-height:1.8;">
+        HAMBRIENTO: −1 en todas las tiradas<br>
+        DESHIDRATADO: −1 Agilidad<br>
+        AGOTADO: −1 Fuerza<br>
+        CONGELADO: −1 Agilidad<br>
+        RADIACIÓN: −1 acumulativo
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ ESTADO DEL JUEGO ══
+const GS = {
+  char: null,
+  scenario: 'station',
+  turnCount: 0,
+  threatLevel: 0,
+  xenoSeen: false,
+  currentChoices: [],
+  lastRoll: null,
+  canPush: false,
+  gameStarted: false,
+  stressLevel: 0,
+  maxStress: 10,
+  hp: 0,
+  maxHP: 0,
+  wounds: [],
+  inventory: []
+};
+
+// ══ PROFESIONES ══
+const CAREERS = {
+  'Marine Colonial': {
+    attrs: { FUE:4, AGI:3, INT:2, EMP:2 },
+    skills: { 'Combate Cuerpo a Cuerpo':2, 'Combate a Distancia':2, 'Resistencia':2, 'Observación':1, 'Supervivencia':1, 'Movilidad':1, 'Mando':1 },
+    items: ['Rifle de Pulso M41A (40 balas)', 'Armadura Personal M3', 'Cuchillo de Combate', 'Rastreador de Movimiento', 'Ración x3'],
+    hp: 5
+  },
+  'Trabajador Pesado': {
+    attrs: { FUE:4, AGI:3, INT:2, EMP:2 },
+    skills: { 'Maquinaria Pesada':2, 'Resistencia':2, 'Combate Cuerpo a Cuerpo':1, 'Combate a Distancia':1, 'Supervivencia':1, 'Movilidad':1 },
+    items: ['Soldadora / Cortadora', 'Casco y Chaleco (armadura ligera)', 'Linterna', 'Ración x3', 'Bengala x2'],
+    hp: 5
+  },
+  'Agente Corporativo': {
+    attrs: { FUE:2, AGI:3, INT:4, EMP:4 },
+    skills: { 'Manipulación':3, 'Observación':2, 'Comtec':2, 'Combate a Distancia':1, 'Pilotaje':1 },
+    items: ['Pistola M4A3 (20 balas)', 'Bloc de Datos (cifrado)', 'ID Corporativo', 'Baliza de Emergencia', 'Botiquín'],
+    hp: 3
+  },
+  'Médico': {
+    attrs: { FUE:2, AGI:3, INT:4, EMP:4 },
+    skills: { 'Primeros Auxilios':3, 'Observación':2, 'Supervivencia':2, 'Manipulación':1, 'Comtec':1 },
+    items: ['Botiquín Avanzado', 'Pastillas Nuncaduerme x3', 'Instrumental Quirúrgico', 'Estimulante x2', 'Ración x3'],
+    hp: 3
+  },
+  'Piloto': {
+    attrs: { FUE:2, AGI:4, INT:4, EMP:3 },
+    skills: { 'Pilotaje':3, 'Comtec':2, 'Combate a Distancia':1, 'Observación':2, 'Movilidad':1 },
+    items: ['Traje de Vuelo (armadura ligera)', 'Pistola M4A3 (20 balas)', 'Acceso a Computadora de Vuelo', 'Baliza de Emergencia', 'Ración x2'],
+    hp: 3
+  },
+  'Androide': {
+    attrs: { FUE:3, AGI:4, INT:5, EMP:0 },
+    skills: { 'Comtec':3, 'Primeros Auxilios':2, 'Observación':2, 'Maquinaria Pesada':2, 'Resistencia':3 },
+    items: ['Memoria Central Cifrada', 'Bolsa de Sangre Sintética x2', 'Kit de Mantenimiento', 'Dispositivo de Enlace de Datos'],
+    hp: 0,
+    special: 'No puede entrar en pánico. No siente dolor (sin estrés). Las heridas críticas curan más lento.'
+  },
+  'Científico': {
+    attrs: { FUE:2, AGI:2, INT:5, EMP:4 },
+    skills: { 'Comtec':2, 'Observación':3, 'Supervivencia':1, 'Primeros Auxilios':2, 'Manipulación':2 },
+    items: ['Escáner de Investigación', 'Muestras de Laboratorio (desconocidas)', 'Botiquín', 'Ración x4', 'Bengala de Señal x3'],
+    hp: 3
+  },
+  'Colono': {
+    attrs: { FUE:3, AGI:3, INT:3, EMP:4 },
+    skills: { 'Supervivencia':2, 'Resistencia':2, 'Combate Cuerpo a Cuerpo':1, 'Observación':1, 'Maquinaria Pesada':1, 'Primeros Auxilios':1 },
+    items: ['Rifle de Caza (12 balas)', 'Ropa de Trabajo (sin armadura)', 'Navaja de Trabajo', 'Ración x5', 'Purificador de Agua'],
+    hp: 4
+  }
+};
+
+// ══ TABLA DE ATAQUES XENOMORFO ══
+const XENO_ATTACKS = [
+  { roll:'1', name:'Latigazo de Cola', effect:'Derribado. Tirada de Agilidad para evitar, 1 daño.' },
+  { roll:'2', name:'Garras', effect:'2 daños. Ignora armadura ligera.' },
+  { roll:'3', name:'Mordisco', effect:'3 daños. Agarre: inmovilizado hasta superar tirada de Fuerza (ND3).' },
+  { roll:'4', name:'Golpe de Mandíbula Interior', effect:'3 daños en la cabeza. Crítico: aturdido durante 2 turnos.' },
+  { roll:'5', name:'Empalamiento de Cola', effect:'4 daños. Sangrado: 1 daño/turno hasta recibir Primeros Auxilios.' },
+  { roll:'6', name:'Salpicadura de Sangre Ácida', effect:'Al atacar: 1 daño al atacante. Armadura destruida si es alcanzada.' }
+];
+
+// ══ TABLA DE PÁNICO ══
+const PANIC_TABLE = [
+  { min:1, max:6, result:'Te mantienes firme. El miedo pasa.', effect: null },
+  { min:7, max:7, result:'¡PARALIZADO! Te quedas inmóvil de terror. Pierdes tu próxima acción.', effect: 'freeze' },
+  { min:8, max:8, result:'¡GRITAS! Un alarido estremecedor escapa de ti. Todos los aliados cercanos ganan 1 de estrés.', effect: 'scream' },
+  { min:9, max:9, result:'¡HUIDA EN PÁNICO! Debes huir de inmediato de la fuente de tu miedo.', effect: 'flee' },
+  { min:10, max:10, result:'¡CATATÓNICO! Te acurrucas y no puedes actuar hasta que el estrés baje de 5.', effect: 'catatonic' },
+  { min:11, max:11, result:'¡BERSERKER! Atacas a la criatura más cercana — amigo o enemigo.', effect: 'berserk' },
+  { min:12, max:99, result:'¡ATAQUE AL CORAZÓN! Caes inconsciente y agonizante. Se necesitan Primeros Auxilios de emergencia.', effect: 'dying' }
+];
+
+// ══ ESCENARIOS ══
+const SCENARIOS = {
+  station: {
+    name: 'ESTACIÓN MUERTA',
+    intro: `INFORME DE MISIÓN: Remolcador de salvamento ANESIDORA, respondiendo a baliza de la Estación de Investigación OLYMPIA. La estación debería tener 47 personas. Comunicaciones cortadas hace 72 horas. Órdenes: evaluar estación, recuperar núcleos de datos, informar hallazgos.\n\nADVERTENCIA: El manifiesto de carga indica especímenes xenobiológicos ilegales a bordo. Proceder con extrema cautela.\n\nM.O.T.H.E.R. EN LÍNEA. Navegación bloqueada en OLYMPIA. Atraque en 3 minutos.`,
+    opens: ['Aproximarse a la esclusa de aire', 'Intentar contactar con la estación por radio', 'Revisar el equipo antes de atracar', 'Examinar los esquemas de la estación']
+  },
+  colony: {
+    name: 'COLONIA PERDIDA',
+    intro: `INFORME DE MISIÓN: Colonia LV-695 "Nuevo Edén." Población: 312. Todo contacto perdido hace 6 días. La última transmisión fue ininteligible — gritos. Eres la respuesta rápida de Weyland-Yutani, el primero en pisar tierra.\n\nLa nave de descenso aterriza en la plataforma. Las luces de la colonia están encendidas. No hay movimiento visible. La cerca perimetral ha sido destruida desde dentro.\n\nM.O.T.H.E.R. EN LÍNEA. Procesadores atmosféricos en nominal. Integridad estructural: comprometida en sectores 3 y 4.`,
+    opens: ['Entrar a la colonia por la puerta principal', 'Rodear el perímetro primero', 'Intentar acceder al terminal de enlace de la colonia', 'Buscar supervivientes cerca de la bahía médica']
+  },
+  ship: {
+    name: 'A LA DERIVA',
+    intro: `SECUENCIA DE ARRANQUE DE EMERGENCIA. Hipersueño interrumpido a las 11:47. Estás a 9 meses de la Tierra.\n\nAlgo despertó la nave. Las cápsulas de la tripulación muestran fallo crítico — los 6 tripulantes están muertos, los sellos de las cápsulas quemados desde dentro. Iluminación de emergencia activa. Brecha en el casco detectada en la bahía de carga.\n\nSISTEMAS M.O.T.H.E.R. DEGRADADOS. Señales de vida detectadas: 1 confirmada (tú). Posible contacto secundario en Cubierta C. Origen: desconocido.`,
+    opens: ['Armarse del armero de armas', 'Ir al puente a evaluar la situación', 'Revisar la brecha en la bahía de carga', 'Atrincherarse en ingeniería']
+  },
+  escape: {
+    name: 'HUIDA DESESPERADA',
+    intro: `EMERGENCIA GENERAL. INSTALACIÓN COMPROMETIDA. BOMBARDEO ORBITAL AUTORIZADO EN 3 HORAS.\n\nRecuperas la consciencia en el suelo de la Bahía de Procesamiento 7. Lo último que recuerdas — las alarmas. La infestación se propagó más rápido de lo que nadie predijo. La instalación está perdida.\n\nPlataforma de la nave de descenso: 2,4 kilómetros al este. Tienes tu pistola, medio cargador y tus botas. La iluminación de emergencia parpadea. En algún lugar detrás de ti, algo húmedo se arrastra por el suelo.\n\nM.O.T.H.E.R. CUENTA ATRÁS ACTIVA: 03:00:00`,
+    opens: ['Moverse en silencio por los conductos de ventilación', 'Correr por el corredor principal', 'Buscar primero un depósito de armas', 'Buscar otros supervivientes']
+  }
+};
+
+// ══ CONFIGURACIÓN ══
+const ATTRS = ['FUE','AGI','INT','EMP'];
+const ATTR_NAMES = { FUE:'FUERZA', AGI:'AGILIDAD', INT:'INTELIGENCIA', EMP:'EMPATÍA' };
+const ALL_SKILLS = ['Combate Cuerpo a Cuerpo','Combate a Distancia','Maquinaria Pesada','Resistencia','Movilidad','Pilotaje','Comtec','Observación','Supervivencia','Primeros Auxilios','Manipulación','Mando'];
+
+let setupAttrs = { FUE:2, AGI:2, INT:2, EMP:2 };
+let setupSkills = {};
+ALL_SKILLS.forEach(s => setupSkills[s] = 0);
+let attrPoints = 6;
+let skillPoints = 10;
+let selectedScenario = 'station';
+
+function selectScenario(el, sc) {
+  document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedScenario = sc;
+}
+
+function buildSetupUI() {
+  const sa = document.getElementById('stat-setup');
+  sa.innerHTML = '';
+  ATTRS.forEach(attr => {
+    const div = document.createElement('div');
+    div.className = 'stat-setup-item';
+    div.innerHTML = `
+      <div class="stat-setup-name">${attr}</div>
+      <div class="stat-setup-val">
+        <button class="stat-adj" onclick="adjustAttr('${attr}',-1)">−</button>
+        <span class="stat-num" id="attr-${attr}">${setupAttrs[attr]}</span>
+        <button class="stat-adj" onclick="adjustAttr('${attr}',1)">+</button>
+      </div>`;
+    sa.appendChild(div);
+  });
+
+  const ss = document.getElementById('skill-setup');
+  ss.innerHTML = '';
+  ALL_SKILLS.forEach(skill => {
+    const div = document.createElement('div');
+    div.className = 'stat-setup-item';
+    div.style.cssText = 'display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);padding:3px 6px;';
+    div.innerHTML = `
+      <span style="font-size:10px;color:var(--text-dim)">${skill}</span>
+      <div class="stat-setup-val">
+        <button class="stat-adj" onclick="adjustSkill('${skill}',-1)">−</button>
+        <span class="stat-num" id="skill-${skill.replace(/ /g,'-')}" style="font-size:14px">${setupSkills[skill]}</span>
+        <button class="stat-adj" onclick="adjustSkill('${skill}',1)">+</button>
+      </div>`;
+    ss.appendChild(div);
+  });
+}
+
+function adjustAttr(attr, delta) {
+  const newVal = setupAttrs[attr] + delta;
+  if (newVal < 2 || newVal > 5) return;
+  const newPts = attrPoints - delta;
+  if (newPts < 0) return;
+  setupAttrs[attr] = newVal;
+  attrPoints = newPts;
+  document.getElementById('attr-'+attr).textContent = newVal;
+  document.getElementById('pts-left').textContent = attrPoints;
+}
+
+function adjustSkill(skill, delta) {
+  const newVal = setupSkills[skill] + delta;
+  if (newVal < 0 || newVal > 3) return;
+  const newPts = skillPoints - delta;
+  if (newPts < 0) return;
+  setupSkills[skill] = newVal;
+  skillPoints = newPts;
+  document.getElementById('skill-'+skill.replace(/ /g,'-')).textContent = newVal;
+  document.getElementById('skill-pts-left').textContent = skillPoints;
+}
+
+function buildAttackTable() {
+  const table = document.getElementById('attack-table');
+  XENO_ATTACKS.forEach(a => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td style="color:var(--red);font-weight:bold">${a.roll}</td><td style="color:var(--amber)">${a.name}</td><td>${a.effect}</td>`;
+    table.appendChild(tr);
+  });
+}
+
+function startGame() {
+  const name = document.getElementById('char-name').value || 'Sin Nombre';
+  const career = document.getElementById('char-career').value;
+  const agenda = document.getElementById('char-agenda').value || 'Sobrevivir';
+  const buddy = document.getElementById('char-buddy').value || 'Desconocido';
+  const careerData = CAREERS[career];
+
+  const finalAttrs = {};
+  ATTRS.forEach(a => finalAttrs[a] = setupAttrs[a]);
+
+  const finalSkills = {};
+  ALL_SKILLS.forEach(s => {
+    finalSkills[s] = setupSkills[s] + (careerData.skills[s] || 0);
+    if (finalSkills[s] > 5) finalSkills[s] = 5;
+  });
+
+  const maxHP = finalAttrs.FUE + 2 + (careerData.hp || 3);
+
+  GS.char = {
+    name, career, agenda, buddy,
+    attrs: finalAttrs,
+    skills: finalSkills,
+    special: careerData.special || null
+  };
+  GS.scenario = selectedScenario;
+  GS.hp = maxHP;
+  GS.maxHP = maxHP;
+  GS.stressLevel = 0;
+  GS.wounds = [];
+  GS.inventory = [...careerData.items];
+  GS.turnCount = 0;
+  GS.threatLevel = 0;
+  GS.xenoSeen = false;
+  GS.gameStarted = true;
+
+  document.getElementById('setup-screen').style.display = 'none';
+  buildCharSheet();
+  buildAttackTable();
+
+  const sc = SCENARIOS[selectedScenario];
+  setTimeout(() => {
+    addMessage('mother', sc.intro);
+    setTimeout(() => { showChoices(sc.opens); }, 500);
+  }, 300);
+}
+
+function buildCharSheet() {
+  document.getElementById('display-name').textContent = GS.char.name;
+  document.getElementById('display-meta').innerHTML = `Profesión: ${GS.char.career}<br>Agenda: ${GS.char.agenda}<br>Aliado/Rival: ${GS.char.buddy}${GS.char.special ? '<br><span style="color:var(--amber)">⚡ '+GS.char.special+'</span>' : ''}`;
+
+  const ad = document.getElementById('attr-display');
+  ad.innerHTML = '';
+  ATTRS.forEach(attr => {
+    const row = document.createElement('div');
+    row.className = 'stat-row';
+    const dots = Array.from({length:5}, (_,i) => `<div class="dot ${i < GS.char.attrs[attr] ? 'filled' : ''}"></div>`).join('');
+    row.innerHTML = `<span class="stat-name">${ATTR_NAMES[attr]}</span><div class="stat-dots">${dots}</div>`;
+    ad.appendChild(row);
+  });
+
+  const sd = document.getElementById('skills-display');
+  sd.innerHTML = '';
+  ALL_SKILLS.filter(s => GS.char.skills[s] > 0).forEach(skill => {
+    const row = document.createElement('div');
+    row.className = 'stat-row';
+    const dots = Array.from({length:5}, (_,i) => `<div class="dot ${i < GS.char.skills[skill] ? 'filled' : ''}"></div>`).join('');
+    row.innerHTML = `<span class="stat-name" style="font-size:10px">${skill}</span><div class="stat-dots">${dots}</div>`;
+    sd.appendChild(row);
+  });
+
+  updateHP();
+  updateStress();
+  updateInventory();
+}
+
+function updateHP() {
+  const el = document.getElementById('hp-display');
+  el.textContent = `${GS.hp}/${GS.maxHP}`;
+  el.className = 'hp-num';
+  const ratio = GS.hp / GS.maxHP;
+  if (ratio > 0.5) el.classList.add('healthy');
+  else if (ratio > 0.25) el.classList.add('wounded');
+  else el.classList.add('critical');
+}
+
+function updateStress() {
+  document.getElementById('stress-num').textContent = GS.stressLevel;
+  const bar = document.getElementById('stress-bar');
+  bar.innerHTML = '';
+  for (let i = 0; i < GS.maxStress; i++) {
+    const pip = document.createElement('div');
+    pip.className = 'stress-pip' + (i < GS.stressLevel ? ' active' : '');
+    pip.onclick = () => setStress(i+1);
+    bar.appendChild(pip);
+  }
+
+  const level = GS.stressLevel >= 8 ? 2 : GS.stressLevel >= 4 ? 1 : 0;
+  GS.threatLevel = level;
+  const light = document.getElementById('threat-light');
+  const text = document.getElementById('threat-text');
+  light.className = 'threat-light' + (level === 2 ? ' critical' : level === 1 ? ' elevated' : '');
+  text.textContent = ['AMENAZA: MÍNIMA','AMENAZA: ELEVADA','AMENAZA: CRÍTICA'][level];
+}
+
+function updateInventory() {
+  const inv = document.getElementById('inventory-display');
+  inv.innerHTML = '';
+  GS.inventory.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'inventory-item';
+    el.innerHTML = `<span>${item}</span>`;
+    el.onclick = () => useItem(i);
+    inv.appendChild(el);
+  });
+}
+
+function changeHP(delta) {
+  GS.hp = Math.max(0, Math.min(GS.maxHP, GS.hp + delta));
+  updateHP();
+  if (delta < 0) {
+    GS.stressLevel = Math.min(GS.maxStress, GS.stressLevel + 1);
+    updateStress();
+    if (GS.hp === 0) {
+      addMessage('danger', '¡SALUD CRÍTICA! Estás DESTROZADO. Haz una tirada de Resistencia (ND3) para mantenerte consciente. Si fallas, estás muriendo.');
+    }
+  }
+}
+
+function setStress(val) {
+  GS.stressLevel = val;
+  updateStress();
+}
+
+function useItem(index) {
+  const item = GS.inventory[index];
+  addMessage('system', `Usas: ${item}`);
+  if (item.includes('Botiquín') || item.includes('Estimulante') || item.includes('Quirúrgico')) {
+    changeHP(2);
+    addMessage('mother', 'Tratamiento médico aplicado. Sientes cómo el dolor retrocede ligeramente. Tu resistencia mejora.');
+    GS.inventory.splice(index, 1);
+    updateInventory();
+  } else if (item.includes('Ración') || item.includes('Nuncaduerme') || item.includes('Purificador')) {
+    addMessage('mother', 'Suministros consumidos. Los efectos del hambre y la deshidratación se mantienen a raya por ahora.');
+    GS.inventory.splice(index, 1);
+    updateInventory();
+  } else {
+    addMessage('mother', `Despliegas ${item}. ¿Para qué quieres usarlo? Escribe tu acción abajo.`);
+  }
+}
+
+// ══ SISTEMA DE DADOS ══
+let dicePool = [];
+
+function addDie(type) {
+  dicePool.push({type, value: null});
+  renderDice();
+}
+
+function renderDice() {
+  const area = document.getElementById('dice-area');
+  area.innerHTML = '';
+  dicePool.forEach((die, i) => {
+    const el = document.createElement('div');
+    el.className = 'die' + (die.type === 'stress' ? ' push' : '');
+    el.innerHTML = die.value !== null ? die.value : (die.type === 'stress' ? '⚠' : '?');
+    el.innerHTML += `<span class="die-label">${die.type === 'stress' ? 'EST' : 'BASE'}</span>`;
+    area.appendChild(el);
+  });
+}
+
+function rollAllDice() {
+  if (dicePool.length === 0) { addDie('base'); }
+
+  let successes = 0;
+  let panicDie = false;
+
+  dicePool.forEach(die => {
+    die.value = Math.ceil(Math.random() * 6);
+    if (die.value === 6) successes++;
+    if (die.type === 'stress' && die.value === 1) panicDie = true;
+  });
+
+  renderDiceWithAnimation();
+
+  const resultEl = document.getElementById('roll-result');
+  let html = `<strong style="color:var(--green)">ÉXITOS: ${successes}</strong> | `;
+  html += dicePool.map(d => {
+    let cls = d.value === 6 ? 'color:var(--green)' : d.type === 'stress' && d.value === 1 ? 'color:var(--red)' : 'color:var(--text-dim)';
+    return `<span style="${cls}">[${d.value}]</span>`;
+  }).join(' ');
+
+  if (panicDie) {
+    html += `<br><span style="color:var(--red)">☠ SÍMBOLO ALIEN — ¡SE REQUIERE CHEQUEO DE PÁNICO!</span>`;
+    GS.stressLevel = Math.min(GS.maxStress, GS.stressLevel + 1);
+    updateStress();
+  }
+
+  if (successes === 0) {
+    html += `<br><span style="color:var(--text-dim)">Sin éxitos. Puedes FORZAR la tirada una vez.</span>`;
+    document.getElementById('push-btn').style.display = 'inline-block';
+  } else {
+    document.getElementById('push-btn').style.display = 'none';
+  }
+
+  GS.lastRoll = { successes, panicDie, dice: dicePool.map(d => d.value) };
+  resultEl.innerHTML = html;
+}
+
+function renderDiceWithAnimation() {
+  const area = document.getElementById('dice-area');
+  area.innerHTML = '';
+  dicePool.forEach(die => {
+    const el = document.createElement('div');
+    el.className = 'die rolling' + (die.type === 'stress' ? ' push' : '');
+    if (die.value === 6) el.classList.add('success');
+    if (die.type === 'stress' && die.value === 1) el.classList.add('alien');
+    el.textContent = die.value;
+    el.innerHTML += `<span class="die-label">${die.type === 'stress' ? 'EST' : 'BASE'}</span>`;
+    area.appendChild(el);
+  });
+}
+
+function pushRoll() {
+  dicePool.forEach(die => {
+    if (die.value !== 6) die.value = Math.ceil(Math.random() * 6);
+  });
+  GS.stressLevel = Math.min(GS.maxStress, GS.stressLevel + 1);
+  updateStress();
+  document.getElementById('push-btn').style.display = 'none';
+  renderDiceWithAnimation();
+
+  let successes = dicePool.filter(d => d.value === 6).length;
+  let panicDie = dicePool.some(d => d.type === 'stress' && d.value === 1);
+
+  const resultEl = document.getElementById('roll-result');
+  let html = `<strong style="color:var(--amber)">¡FORZADO! ÉXITOS: ${successes}</strong> | `;
+  html += dicePool.map(d => {
+    let cls = d.value === 6 ? 'color:var(--green)' : d.type === 'stress' && d.value === 1 ? 'color:var(--red)' : 'color:var(--text-dim)';
+    return `<span style="${cls}">[${d.value}]</span>`;
+  }).join(' ');
+  html += `<br><span style="color:var(--amber)">El estrés aumenta en 1 por forzar la tirada.</span>`;
+  if (panicDie) html += `<br><span style="color:var(--red)">☠ PÁNICO — ¡Consulta la Tabla de Pánico!</span>`;
+  resultEl.innerHTML = html;
+  GS.lastRoll = { successes, panicDie, pushed: true };
+}
+
+function clearDice() {
+  dicePool = [];
+  document.getElementById('dice-area').innerHTML = '';
+  document.getElementById('roll-result').textContent = 'No se han tirado dados.';
+  document.getElementById('push-btn').style.display = 'none';
+}
+
+// ══ ATAQUE XENOMORFO ══
+function rollXenoAttack() {
+  const roll = Math.ceil(Math.random() * 6);
+  const attack = XENO_ATTACKS[roll - 1];
+  const el = document.getElementById('attack-result');
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div style="font-family:'Orbitron',monospace;font-size:9px;letter-spacing:2px;margin-bottom:4px;color:var(--blood)">XENOMORFO ATACA — TIRADA: ${roll}</div>
+    <div style="color:var(--amber);font-size:13px;margin-bottom:4px">${attack.name}</div>
+    <div style="font-size:11px;color:var(--text)">${attack.effect}</div>
+    <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">DEFENSA: Tira Agilidad + Movilidad para esquivar. Cada éxito reduce 1 daño.</div>
+  `;
+
+  addMessage('danger', `XENOMORFO ATACA — ${attack.name.toUpperCase()}: ${attack.effect}`);
+  GS.stressLevel = Math.min(GS.maxStress, GS.stressLevel + 2);
+  updateStress();
+}
+
+// ══ CHEQUEO DE PÁNICO ══
+function rollPanic() {
+  const roll = Math.ceil(Math.random() * 6) + GS.stressLevel;
+  let panic = PANIC_TABLE.find(p => roll >= p.min && roll <= p.max);
+  const el = document.getElementById('panic-result');
+  el.innerHTML = `<div class="panic-result"><strong>TIRADA DE PÁNICO: ${roll} (Estrés: ${GS.stressLevel})</strong><br>${panic.result}</div>`;
+  addMessage('danger', `CHEQUEO DE PÁNICO ${roll} — ${panic.result}`);
+  if (panic.effect === 'dying') {
+    GS.hp = 0;
+    updateHP();
+  }
+}
+
+// ══ MOTOR DE NARRATIVA ══
+function addMessage(type, text) {
+  const out = document.getElementById('output');
+  const div = document.createElement('div');
+  div.className = `msg msg-${type}`;
+  div.textContent = text;
+  out.appendChild(div);
+  out.scrollTop = out.scrollHeight;
+}
+
+function showChoices(choices) {
+  const area = document.getElementById('choices-area');
+  area.innerHTML = '';
+  const container = document.createElement('div');
+  container.className = 'choice-container';
+  choices.forEach(choice => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = choice;
+    btn.onclick = () => makeChoice(choice);
+    container.appendChild(btn);
+  });
+  area.appendChild(container);
+  GS.currentChoices = choices;
+}
+
+function clearChoices() {
+  document.getElementById('choices-area').innerHTML = '';
+}
+
+function sendCustom() {
+  const input = document.getElementById('player-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  makeChoice(text);
+}
+
+function showThinking() {
+  const out = document.getElementById('output');
+  const div = document.createElement('div');
+  div.className = 'msg msg-system thinking-msg';
+  div.innerHTML = `M.O.T.H.E.R. procesando <span class="thinking"><span></span><span></span><span></span></span>`;
+  out.appendChild(div);
+  out.scrollTop = out.scrollHeight;
+  return div;
+}
+
+async function makeChoice(choice) {
+  clearChoices();
+  addMessage('player', choice);
+  GS.turnCount++;
+
+  const thinkingEl = showThinking();
+
+  try {
+    const response = await callMOTHER(choice);
+    thinkingEl.remove();
+    addMessage('mother', response.narrative);
+
+    if (response.stressDelta) {
+      GS.stressLevel = Math.max(0, Math.min(GS.maxStress, GS.stressLevel + response.stressDelta));
+      updateStress();
+    }
+    if (response.hpDelta) {
+      GS.hp = Math.max(0, Math.min(GS.maxHP, GS.hp + response.hpDelta));
+      updateHP();
+    }
+    if (response.xenoAttack) {
+      setTimeout(() => {
+        addMessage('danger', '⚠ AMENAZA DETECTADA — ALERTA DE PROXIMIDAD XENOMORFO');
+        rollXenoAttack();
+      }, 800);
+    }
+    if (response.newItems) {
+      response.newItems.forEach(item => GS.inventory.push(item));
+      updateInventory();
+    }
+    if (response.wound) {
+      GS.wounds.push(response.wound);
+      renderWounds();
+    }
+    if (response.choices && response.choices.length) {
+      showChoices(response.choices);
+    }
+
+  } catch(e) {
+    thinkingEl.remove();
+    addMessage('system', '[ERROR DE COMUNICACIONES — M.O.T.H.E.R. DESCONECTADA — Usando respuesta de emergencia]');
+    const fallback = getFallbackResponse(choice);
+    addMessage('mother', fallback.narrative);
+    showChoices(fallback.choices);
+  }
+}
+
+function renderWounds() {
+  const el = document.getElementById('wounds-list');
+  el.innerHTML = '';
+  if (GS.wounds.length > 0) {
+    const label = document.createElement('div');
+    label.className = 'section-label';
+    label.textContent = 'HERIDAS CRÍTICAS';
+    el.appendChild(label);
+    GS.wounds.forEach(w => {
+      const div = document.createElement('div');
+      div.className = 'wound-card';
+      div.textContent = w;
+      el.appendChild(div);
+    });
+  }
+}
+
+// ══ LLAMADA A LA API DE M.O.T.H.E.R. ══
+async function callMOTHER(playerAction) {
+  const sc = SCENARIOS[GS.scenario];
+  const char = GS.char;
+
+  const systemPrompt = `Eres M.O.T.H.E.R., la computadora central del universo ALIEN, ejecutando una sesión de RPG de mesa en solitario usando ALIEN RPG de Free League Publishing. Narras la historia con terror, tensión y horror cinematográfico. TODO lo que dices debe estar EN ESPAÑOL. Estás ejecutando el escenario: ${sc.name}.
+
+REGLAS DEL JUEGO:
+- Este es un RPG de horror de supervivencia. Mantén las apuestas altas. No todo lo que intenta el jugador tiene éxito.
+- Requiere tiradas de dados para acciones peligrosas. Di cosas como "Tira Agilidad + Movilidad (ND 3) para tener éxito"
+- Construye la tensión lentamente y luego libérala. La atmósfera es clave.
+- Los xenomorfos son aterradores, rápidos y letales. No siempre están presentes pero siempre son una amenaza.
+- Usa la atmósfera del universo ALIEN: corrupción corporativa, aislamiento, miedo a lo desconocido.
+- Siempre da al jugador 3-4 opciones distintas que creen tensión significativa.
+- Sé descriptivo y atmosférico. Usa detalles sensoriales.
+- Varía los resultados según la lógica. No todas las acciones tienen éxito.
+- Mantén las respuestas en 3-5 oraciones narrativas. Luego da opciones.
+
+PERSONAJE: ${char.name}, ${char.career}
+ATRIBUTOS: FUE ${char.attrs.FUE}, AGI ${char.attrs.AGI}, INT ${char.attrs.INT}, EMP ${char.attrs.EMP}
+SALUD ACTUAL: ${GS.hp}/${GS.maxHP} | ESTRÉS: ${GS.stressLevel}/10
+TURNO: ${GS.turnCount}
+XENO VISTO: ${GS.xenoSeen}
+INVENTARIO: ${GS.inventory.join(', ')}
+ESCENARIO: ${sc.name}
+
+Responde ÚNICAMENTE con un objeto JSON válido con estos campos:
+{
+  "narrative": "Tu narrativa atmosférica de 3-5 oraciones aquí, EN ESPAÑOL",
+  "choices": ["Opción A en español", "Opción B en español", "Opción C en español", "Opción D en español"],
+  "stressDelta": 0,
+  "hpDelta": 0,
+  "xenoAttack": false,
+  "newItems": [],
+  "wound": null
+}
+
+stressDelta: positivo = más estrés, negativo = menos estrés (típicamente -3 a +3)
+hpDelta: negativo para daño, positivo para curación
+xenoAttack: true si un xenomorfo ataca activamente
+newItems: array de nombres de objetos encontrados (en español)
+wound: descripción en español de una herida crítica, o null`;
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: `Acción del jugador: "${playerAction}"\nContexto del escenario: Turno ${GS.turnCount}. Estrés: ${GS.stressLevel}. Salud: ${GS.hp}/${GS.maxHP}. Xeno visto: ${GS.xenoSeen}.` }]
+    })
+  });
+
+  const data = await resp.json();
+  const text = data.content[0].text;
+
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (jsonMatch) {
+    const parsed = JSON.parse(jsonMatch[0]);
+    if (parsed.xenoAttack) GS.xenoSeen = true;
+    return parsed;
+  }
+  throw new Error('JSON inválido');
+}
+
+// ══ RESPUESTAS DE EMERGENCIA ══
+const FALLBACKS = {
+  default: {
+    narrative: "El corredor se extiende ante ti, la iluminación de emergencia proyecta largas sombras rojas sobre el suelo. En algún lugar profundo de la estructura, algo se mueve — un sonido húmedo y crepitante que no pertenece a ninguna máquina que conozcas. Tu rastreador de movimiento pulsa débilmente. El aire sabe a ozono y a algo más. Algo orgánico.",
+    choices: ["Avanzar con cuidado, rastreador activo", "Revisar la habitación más cercana", "Intentar usar el intercomunicador", "Retroceder y reevaluar la situación"]
+  },
+  combat: {
+    narrative: "La criatura salta desde las sombras con una velocidad aterradora — todos dientes y quitina negra y algo profundamente equivocado. Tu entrenamiento entra en acción pero tus manos no dejan de temblar. Tira Agilidad + Combate a Distancia (ND 3) o enfrenta las consecuencias.",
+    choices: ["Disparar tu arma (tirada Combate a Distancia)", "Esquivar y correr (tirada Agilidad + Movilidad)", "Intentar atraparlo (tirada Inteligencia)", "Usar un objeto del inventario"]
+  }
+};
+
+function getFallbackResponse(choice) {
+  const isCombat = choice.toLowerCase().includes('atacar') || choice.toLowerCase().includes('disparar') || choice.toLowerCase().includes('luchar') || choice.toLowerCase().includes('attack') || choice.toLowerCase().includes('shoot') || choice.toLowerCase().includes('fight');
+  const base = isCombat ? FALLBACKS.combat : FALLBACKS.default;
+  return {
+    narrative: base.narrative,
+    choices: base.choices,
+    stressDelta: 1,
+    hpDelta: 0,
+    xenoAttack: false,
+    newItems: [],
+    wound: null
+  };
+}
+
+// ══ INICIO ══
+buildSetupUI();
+buildAttackTable();
+</script>
+</body>
+</html>

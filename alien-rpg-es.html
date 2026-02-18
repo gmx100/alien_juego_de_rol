@@ -606,6 +606,116 @@
 
   .start-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+  /* ══ BOTONES AUTO-ASIGNACIÓN ══ */
+  .auto-btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
+
+  .auto-btn {
+    padding: 3px 9px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    border: 1px solid;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    border-radius: 2px;
+  }
+
+  .auto-career {
+    background: rgba(0,255,65,0.07);
+    border-color: var(--green-dim);
+    color: var(--green);
+  }
+  .auto-career:hover {
+    background: rgba(0,255,65,0.2);
+    border-color: var(--green);
+    box-shadow: 0 0 8px rgba(0,255,65,0.3);
+  }
+
+  .auto-balanced {
+    background: rgba(255,149,0,0.07);
+    border-color: rgba(255,149,0,0.5);
+    color: var(--amber);
+  }
+  .auto-balanced:hover {
+    background: rgba(255,149,0,0.2);
+    border-color: var(--amber);
+    box-shadow: 0 0 8px rgba(255,149,0,0.3);
+  }
+
+  .auto-random {
+    background: rgba(0,85,26,0.15);
+    border-color: var(--border);
+    color: var(--text-dim);
+  }
+  .auto-random:hover {
+    background: rgba(0,255,65,0.1);
+    border-color: var(--green-dim);
+    color: var(--green);
+  }
+
+  .auto-btn-full {
+    background: rgba(0,255,65,0.06);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 12px 16px;
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .auto-btn-full:hover {
+    background: rgba(0,255,65,0.15);
+    box-shadow: 0 0 20px rgba(0,255,65,0.3);
+    letter-spacing: 3px;
+  }
+
+  @keyframes flashGreen {
+    0%   { background: rgba(0,255,65,0.35); color: #000; }
+    100% { background: transparent; color: var(--green); }
+  }
+  .stat-num.auto-flash { animation: flashGreen 0.5s ease; }
+
+  #char-preview {
+    background: rgba(0,255,65,0.03);
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 6px;
+    animation: slideUp 0.3s ease;
+  }
+  #char-preview .preview-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px; letter-spacing: 2px;
+    color: var(--green-dim);
+    margin-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 3px;
+  }
+  #char-preview .preview-row {
+    display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px;
+  }
+  #char-preview .preview-chip {
+    background: rgba(0,85,26,0.3);
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    color: var(--green);
+    letter-spacing: 1px;
+  }
+  #char-preview .preview-chip.skill-chip {
+    color: var(--amber);
+    border-color: rgba(255,149,0,0.4);
+    background: rgba(255,149,0,0.06);
+  }
+
   .scenario-card {
     border: 1px solid var(--border);
     padding: 8px;
@@ -671,11 +781,271 @@
     animation: xenoReveal 0.5s ease;
   }
 
+  /* ══ DADOS MEJORADO ══ */
+  #dice-panel { grid-column: 2; padding: 0; }
+
+  .dice-panel-inner {
+    display: flex; flex-direction: column; gap: 6px;
+    padding: 30px 8px 8px;
+    height: 100%;
+  }
+
+  .dice-top-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  }
+
+  .dice-quick-box {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    padding: 8px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+
+  .dice-section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 8px; letter-spacing: 2px;
+    color: var(--green-dim);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+    margin-bottom: 2px;
+  }
+
+  .quick-selects { display: flex; flex-direction: column; gap: 4px; }
+
+  .form-group-inline { display: flex; align-items: center; gap: 6px; }
+
+  .dice-lbl {
+    font-family: 'Orbitron', monospace;
+    font-size: 8px; letter-spacing: 1px;
+    color: var(--text-dim);
+    min-width: 62px;
+  }
+
+  .dice-select {
+    flex: 1;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid var(--border);
+    color: var(--green);
+    padding: 3px 5px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .dice-select:focus { border-color: var(--green); }
+  .dice-select option { background: var(--dark); }
+
+  .dice-quick-btn {
+    background: rgba(0,255,65,0.08);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 7px;
+    cursor: pointer;
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .dice-quick-btn:hover {
+    background: rgba(0,255,65,0.2);
+    box-shadow: 0 0 15px rgba(0,255,65,0.3);
+  }
+
+  .roll-main-btn {
+    background: rgba(0,255,65,0.08) !important;
+    border-color: var(--green) !important;
+    color: var(--green) !important;
+    font-family: 'Orbitron', monospace !important;
+    font-size: 10px !important;
+    letter-spacing: 1px !important;
+  }
+
+  .push-btn-style {
+    border-color: var(--amber) !important;
+    color: var(--amber) !important;
+  }
+
+  .dice-pool-label {
+    font-size: 10px; color: var(--text-dim);
+    text-align: center; margin-top: 2px;
+  }
+
+  /* Dados visuales en el pool */
+  .dice-area {
+    display: flex; gap: 5px; align-items: center; flex-wrap: wrap;
+    padding: 4px; min-height: 30px;
+  }
+
+  .die {
+    width: 40px; height: 40px;
+    border: 2px solid var(--green-dim);
+    background: var(--green-faint);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 18px; font-weight: 700;
+    border-radius: 6px;
+    position: relative;
+    transition: all 0.2s;
+    cursor: default;
+    flex-shrink: 0;
+  }
+
+  .die.rolling { animation: diceRoll 0.6s ease; }
+  .die.success { color: var(--green); border-color: var(--green); box-shadow: 0 0 14px var(--green); background: rgba(0,255,65,0.12); }
+  .die.stress-idle { color: var(--amber); border-color: var(--amber); }
+  .die.panic-die { color: var(--red); border-color: var(--red); box-shadow: 0 0 14px var(--red); background: rgba(255,34,0,0.1); animation: shake 0.4s infinite; }
+  .die.fail { color: var(--text-dim); border-color: rgba(0,85,26,0.4); }
+
+  .die-label { font-size: 7px; position: absolute; bottom: 1px; right: 3px; color: var(--text-dim); font-family: 'Share Tech Mono', monospace; }
+
+  /* ══ CAJA DE RESULTADO ══ */
+  .roll-result-box {
+    background: rgba(0,0,0,0.5);
+    border: 1px solid var(--green-dim);
+    padding: 10px;
+    animation: slideUp 0.3s ease;
+    box-shadow: 0 0 20px rgba(0,255,65,0.1);
+  }
+
+  .rr-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 6px;
+  }
+
+  .rr-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px; letter-spacing: 3px; color: var(--green-dim);
+  }
+
+  .rr-successes {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px; font-weight: 700;
+    color: var(--green);
+    text-shadow: 0 0 10px var(--green);
+  }
+
+  .rr-successes.zero { color: var(--text-dim); text-shadow: none; }
+  .rr-successes.pushed { color: var(--amber); text-shadow: 0 0 10px var(--amber); }
+  .rr-successes.panic { color: var(--red); text-shadow: 0 0 10px var(--red); }
+
+  .rr-dice-row {
+    display: flex; gap: 5px; flex-wrap: wrap;
+    margin-bottom: 8px; padding: 6px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(0,85,26,0.3);
+    min-height: 52px; align-items: center;
+  }
+
+  /* Dado resultado grande */
+  .result-die {
+    width: 44px; height: 44px;
+    border-radius: 8px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 20px; font-weight: 900;
+    position: relative;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+
+  .result-die .rd-num { line-height: 1; }
+  .result-die .rd-lbl { font-size: 7px; margin-top: 1px; letter-spacing: 1px; opacity: 0.7; }
+
+  .result-die.rd-success {
+    background: rgba(0,255,65,0.15);
+    border: 2px solid var(--green);
+    color: var(--green);
+    box-shadow: 0 0 12px rgba(0,255,65,0.4);
+  }
+
+  .result-die.rd-fail {
+    background: rgba(0,85,26,0.1);
+    border: 2px solid rgba(0,85,26,0.4);
+    color: var(--text-dim);
+  }
+
+  .result-die.rd-stress {
+    background: rgba(255,149,0,0.1);
+    border: 2px solid var(--amber);
+    color: var(--amber);
+  }
+
+  .result-die.rd-panic {
+    background: rgba(255,34,0,0.2);
+    border: 2px solid var(--red);
+    color: var(--red);
+    box-shadow: 0 0 12px rgba(255,34,0,0.5);
+    animation: shake 0.3s infinite;
+  }
+
+  .result-die.rd-stress-ok {
+    background: rgba(255,149,0,0.08);
+    border: 2px solid rgba(255,149,0,0.5);
+    color: rgba(255,149,0,0.7);
+  }
+
+  .rr-verdict {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px; letter-spacing: 2px;
+    text-align: center; padding: 6px;
+    margin-bottom: 4px;
+    border: 1px solid;
+  }
+
+  .rr-verdict.v-success { color: var(--green); border-color: var(--green); background: rgba(0,255,65,0.06); }
+  .rr-verdict.v-fail { color: var(--text-dim); border-color: rgba(0,85,26,0.4); }
+  .rr-verdict.v-panic { color: var(--red); border-color: var(--red); background: rgba(255,34,0,0.08); animation: blink 1s infinite; }
+  .rr-verdict.v-push { color: var(--amber); border-color: var(--amber); background: rgba(255,149,0,0.06); }
+
+  .rr-detail { font-size: 10px; color: var(--text-dim); line-height: 1.6; }
+
+  /* ══ HISTORIAL ══ */
+  .dice-history-box {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    padding: 6px 8px;
+    flex: 1;
+  }
+
+  .dice-history {
+    max-height: 110px;
+    overflow-y: auto;
+    margin-top: 4px;
+  }
+
+  .dice-history::-webkit-scrollbar { width: 3px; }
+  .dice-history::-webkit-scrollbar-thumb { background: var(--green-dim); }
+
+  .history-entry {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(0,85,26,0.2);
+    font-size: 10px;
+    animation: slideUp 0.2s ease;
+  }
+
+  .history-entry:last-child { border-bottom: none; }
+  .he-turn { color: var(--text-dim); min-width: 50px; }
+  .he-dice { color: var(--text-dim); flex: 1; padding: 0 6px; font-size: 9px; }
+  .he-result { font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 700; }
+  .he-result.hr-success { color: var(--green); }
+  .he-result.hr-fail { color: var(--text-dim); }
+  .he-result.hr-panic { color: var(--red); }
+  .he-result.hr-push { color: var(--amber); }
+  .he-tag { font-size: 8px; padding: 1px 4px; border: 1px solid; border-radius: 2px; margin-left: 4px; }
+  .he-tag.panic { color: var(--red); border-color: var(--red); }
+  .he-tag.pushed { color: var(--amber); border-color: var(--amber); }
+
   @media (max-width: 900px) {
     .main-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
     #char-panel { grid-row: auto; }
     #info-panel { grid-row: auto; }
     .mother-output { height: 250px; }
+    .dice-top-row { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -738,15 +1108,34 @@
       </div>
     </div>
 
-    <div class="section-label">ATRIBUTOS — Distribuye 14 Puntos (mín 2, máx 5)</div>
+    <div class="section-label" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;">
+      <span>ATRIBUTOS — Distribuye 14 Puntos (mín 2, máx 5)</span>
+      <div class="auto-btn-group">
+        <button class="auto-btn auto-career" onclick="autoAssignAttrs('career')">⚡ Profesión</button>
+        <button class="auto-btn auto-balanced" onclick="autoAssignAttrs('balanced')">◈ Equilibrado</button>
+        <button class="auto-btn auto-random" onclick="autoAssignAttrs('random')">🎲 Aleatorio</button>
+      </div>
+    </div>
     <div class="stat-points">Puntos Restantes: <span id="pts-left">6</span></div>
     <div class="stat-setup" id="stat-setup"></div>
 
-    <div class="section-label">PUNTOS DE HABILIDAD — Distribuye 10 Puntos (máx 3 por habilidad)</div>
+    <div class="section-label" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;">
+      <span>PUNTOS DE HABILIDAD — Distribuye 10 Puntos (máx 3 por habilidad)</span>
+      <div class="auto-btn-group">
+        <button class="auto-btn auto-career" onclick="autoAssignSkills('career')">⚡ Profesión</button>
+        <button class="auto-btn auto-balanced" onclick="autoAssignSkills('spread')">◈ Repartir</button>
+        <button class="auto-btn auto-random" onclick="autoAssignSkills('random')">🎲 Aleatorio</button>
+      </div>
+    </div>
     <div id="skill-setup" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;"></div>
     <div class="stat-points">Puntos de Habilidad Restantes: <span id="skill-pts-left">10</span></div>
 
-    <button class="start-btn" onclick="startGame()">◈ INICIALIZAR MISIÓN ◈</button>
+    <div id="char-preview" style="display:none;"></div>
+
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button class="auto-btn-full" onclick="autoAssignAll()">⚡⚡ AUTO-COMPLETAR TODO</button>
+      <button class="start-btn" onclick="startGame()" style="margin-top:0;flex:1;">◈ INICIALIZAR MISIÓN ◈</button>
+    </div>
   </div>
 </div>
 
@@ -803,19 +1192,91 @@
     </div>
   </div>
 
-  <!-- Panel de Dados -->
-  <div class="panel" data-label="SISTEMA DE DADOS — BASE / ESTRÉS" id="dice-panel" style="grid-column:2;">
-    <div style="padding:5px;">
-      <div class="dice-controls">
-        <span style="font-size:11px;color:var(--text-dim);">DADOS BASE:</span>
-        <button class="dice-ctrl-btn" onclick="addDie('base')">+ D6</button>
-        <button class="dice-ctrl-btn stress-die" onclick="addDie('stress')">+ D6 ESTRÉS</button>
-        <button class="dice-ctrl-btn" onclick="rollAllDice()">◈ TIRAR</button>
-        <button class="dice-ctrl-btn" onclick="pushRoll()" id="push-btn" style="display:none">↑ FORZAR</button>
-        <button class="dice-ctrl-btn" onclick="clearDice()" style="color:var(--text-dim)">LIMPIAR</button>
+  <!-- Panel de Dados MEJORADO -->
+  <div class="panel" data-label="SISTEMA DE DADOS — TIRADAS Y RESULTADOS" id="dice-panel" style="grid-column:2;">
+    <div class="dice-panel-inner">
+
+      <!-- Fila superior: configuración rápida + pool -->
+      <div class="dice-top-row">
+
+        <!-- Selector rápido atributo+habilidad -->
+        <div class="dice-quick-box">
+          <div class="dice-section-title">TIRADA RÁPIDA</div>
+          <div class="quick-selects">
+            <div class="form-group-inline">
+              <label class="dice-lbl">ATRIBUTO</label>
+              <select class="dice-select" id="quick-attr">
+                <option value="">— Elige —</option>
+                <option value="FUE">FUE – Fuerza</option>
+                <option value="AGI">AGI – Agilidad</option>
+                <option value="INT">INT – Inteligencia</option>
+                <option value="EMP">EMP – Empatía</option>
+              </select>
+            </div>
+            <div class="form-group-inline">
+              <label class="dice-lbl">HABILIDAD</label>
+              <select class="dice-select" id="quick-skill">
+                <option value="0">— Ninguna —</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+            <div class="form-group-inline">
+              <label class="dice-lbl">ESTRÉS D6</label>
+              <select class="dice-select" id="quick-stress">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </div>
+          </div>
+          <button class="dice-quick-btn" onclick="quickRoll()">⬡ TIRADA RÁPIDA</button>
+        </div>
+
+        <!-- Pool manual -->
+        <div class="dice-quick-box">
+          <div class="dice-section-title">POOL MANUAL</div>
+          <div class="dice-controls">
+            <button class="dice-ctrl-btn" onclick="addDie('base')">＋ D6 BASE</button>
+            <button class="dice-ctrl-btn stress-die" onclick="addDie('stress')">＋ D6 ESTRÉS</button>
+          </div>
+          <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap;">
+            <button class="dice-ctrl-btn roll-main-btn" onclick="rollAllDice()">◈ TIRAR DADOS</button>
+            <button class="dice-ctrl-btn push-btn-style" onclick="pushRoll()" id="push-btn" style="display:none">↑ FORZAR</button>
+            <button class="dice-ctrl-btn" onclick="clearDice()" style="color:var(--text-dim);border-color:var(--text-dim)">✕ LIMPIAR</button>
+          </div>
+          <!-- Pool visual -->
+          <div class="dice-pool-label" id="pool-label">Pool: 0 dados</div>
+          <div class="dice-area" id="dice-area"></div>
+        </div>
       </div>
-      <div class="dice-area" id="dice-area"></div>
-      <div class="roll-result" id="roll-result">No se han tirado dados.</div>
+
+      <!-- Resultado principal -->
+      <div class="roll-result-box" id="roll-result-box" style="display:none">
+        <div class="rr-header">
+          <span class="rr-label" id="rr-label">RESULTADO</span>
+          <span class="rr-successes" id="rr-successes">0 ÉXITOS</span>
+        </div>
+        <div class="rr-dice-row" id="rr-dice-row"></div>
+        <div class="rr-verdict" id="rr-verdict"></div>
+        <div class="rr-detail" id="rr-detail"></div>
+      </div>
+
+      <!-- Historial de tiradas -->
+      <div class="dice-history-box">
+        <div class="dice-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+          HISTORIAL DE TIRADAS
+          <button onclick="clearHistory()" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:10px;font-family:'Share Tech Mono',monospace;">BORRAR</button>
+        </div>
+        <div class="dice-history" id="dice-history">
+          <div style="color:var(--text-dim);font-size:11px;text-align:center;padding:10px;">Sin tiradas aún.</div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1083,6 +1544,171 @@ function adjustSkill(skill, delta) {
   document.getElementById('skill-pts-left').textContent = skillPoints;
 }
 
+// ══ AUTO-ASIGNACIÓN ══
+
+// Plantillas de atributos óptimos por profesión (14 puntos en total)
+const CAREER_ATTR_PRESETS = {
+  'Marine Colonial':    { FUE:5, AGI:4, INT:3, EMP:2 },
+  'Trabajador Pesado':  { FUE:5, AGI:4, INT:3, EMP:2 },
+  'Agente Corporativo': { FUE:2, AGI:3, INT:5, EMP:4 },
+  'Médico':             { FUE:2, AGI:3, INT:5, EMP:4 },
+  'Piloto':             { FUE:2, AGI:5, INT:4, EMP:3 },
+  'Androide':           { FUE:3, AGI:4, INT:5, EMP:2 },
+  'Científico':         { FUE:2, AGI:2, INT:5, EMP:5 },
+  'Colono':             { FUE:3, AGI:3, INT:4, EMP:4 },
+};
+
+// Habilidades sugeridas por profesión (10 puntos)
+const CAREER_SKILL_PRESETS = {
+  'Marine Colonial':    { 'Combate a Distancia':3, 'Combate Cuerpo a Cuerpo':2, 'Resistencia':2, 'Movilidad':2, 'Supervivencia':1 },
+  'Trabajador Pesado':  { 'Maquinaria Pesada':3, 'Resistencia':3, 'Combate Cuerpo a Cuerpo':2, 'Movilidad':1, 'Supervivencia':1 },
+  'Agente Corporativo': { 'Manipulación':3, 'Observación':3, 'Comtec':2, 'Combate a Distancia':1, 'Pilotaje':1 },
+  'Médico':             { 'Primeros Auxilios':3, 'Observación':3, 'Supervivencia':2, 'Manipulación':2 },
+  'Piloto':             { 'Pilotaje':3, 'Comtec':3, 'Observación':2, 'Movilidad':2 },
+  'Androide':           { 'Comtec':3, 'Primeros Auxilios':3, 'Resistencia':2, 'Observación':2 },
+  'Científico':         { 'Observación':3, 'Comtec':3, 'Primeros Auxilios':2, 'Manipulación':2 },
+  'Colono':             { 'Supervivencia':3, 'Resistencia':3, 'Observación':2, 'Primeros Auxilios':2 },
+};
+
+function autoAssignAttrs(mode) {
+  const career = document.getElementById('char-career').value;
+
+  // Resetear primero
+  ATTRS.forEach(a => { setupAttrs[a] = 2; });
+  attrPoints = 6; // 14 - (4 attrs × 2 mín) = 6 restantes
+
+  if (mode === 'career') {
+    const preset = CAREER_ATTR_PRESETS[career] || { FUE:3, AGI:3, INT:4, EMP:4 };
+    ATTRS.forEach(a => { setupAttrs[a] = preset[a] || 2; });
+    attrPoints = 0;
+  } else if (mode === 'balanced') {
+    // Reparte los 6 puntos lo más equitativamente posible (3,3,2,2 + 1 extra)
+    const order = [...ATTRS];
+    let pts = 6;
+    // Ronda 1: +1 a todos
+    order.forEach(a => { if (pts > 0) { setupAttrs[a]++; pts--; } });
+    // Ronda 2: +1 a los dos primeros
+    order.slice(0,2).forEach(a => { if (pts > 0) { setupAttrs[a]++; pts--; } });
+    attrPoints = pts;
+  } else if (mode === 'random') {
+    let pts = 6;
+    while (pts > 0) {
+      const a = ATTRS[Math.floor(Math.random() * ATTRS.length)];
+      if (setupAttrs[a] < 5) { setupAttrs[a]++; pts--; }
+    }
+    attrPoints = 0;
+  }
+
+  // Actualizar UI con flash
+  ATTRS.forEach(a => {
+    const el = document.getElementById('attr-'+a);
+    if (el) {
+      el.textContent = setupAttrs[a];
+      el.classList.remove('auto-flash');
+      void el.offsetWidth; // reflow para reiniciar animación
+      el.classList.add('auto-flash');
+      setTimeout(() => el.classList.remove('auto-flash'), 600);
+    }
+  });
+  document.getElementById('pts-left').textContent = attrPoints;
+  updateCharPreview();
+}
+
+function autoAssignSkills(mode) {
+  const career = document.getElementById('char-career').value;
+
+  // Resetear
+  ALL_SKILLS.forEach(s => { setupSkills[s] = 0; });
+  skillPoints = 10;
+
+  if (mode === 'career') {
+    const preset = CAREER_SKILL_PRESETS[career] || {};
+    Object.entries(preset).forEach(([skill, val]) => {
+      if (ALL_SKILLS.includes(skill)) {
+        setupSkills[skill] = Math.min(val, 3);
+        skillPoints -= setupSkills[skill];
+      }
+    });
+    // Si sobran puntos, repartir en las primeras habilidades del preset
+    if (skillPoints > 0) {
+      Object.keys(preset).forEach(skill => {
+        if (skillPoints > 0 && setupSkills[skill] < 3 && ALL_SKILLS.includes(skill)) {
+          setupSkills[skill]++;
+          skillPoints--;
+        }
+      });
+    }
+  } else if (mode === 'spread') {
+    // Repartir uniformemente entre todas las habilidades
+    let pts = 10;
+    let round = 0;
+    while (pts > 0 && round < 3) {
+      ALL_SKILLS.forEach(s => {
+        if (pts > 0 && setupSkills[s] < 3) { setupSkills[s]++; pts--; }
+      });
+      round++;
+    }
+    skillPoints = pts;
+  } else if (mode === 'random') {
+    let pts = 10;
+    let attempts = 0;
+    while (pts > 0 && attempts < 200) {
+      const s = ALL_SKILLS[Math.floor(Math.random() * ALL_SKILLS.length)];
+      if (setupSkills[s] < 3) { setupSkills[s]++; pts--; }
+      attempts++;
+    }
+    skillPoints = pts;
+  }
+
+  // Actualizar UI con flash
+  ALL_SKILLS.forEach(skill => {
+    const el = document.getElementById('skill-'+skill.replace(/ /g,'-'));
+    if (el) {
+      el.textContent = setupSkills[skill];
+      el.classList.remove('auto-flash');
+      void el.offsetWidth;
+      el.classList.add('auto-flash');
+      setTimeout(() => el.classList.remove('auto-flash'), 600);
+    }
+  });
+  document.getElementById('skill-pts-left').textContent = skillPoints;
+  updateCharPreview();
+}
+
+function autoAssignAll() {
+  autoAssignAttrs('career');
+  setTimeout(() => {
+    autoAssignSkills('career');
+    setTimeout(updateCharPreview, 100);
+  }, 150);
+}
+
+function updateCharPreview() {
+  const preview = document.getElementById('char-preview');
+  const career = document.getElementById('char-career').value;
+  preview.style.display = 'block';
+
+  // Atributos
+  const attrChips = ATTRS.map(a =>
+    `<span class="preview-chip">${a}: ${setupAttrs[a]}</span>`
+  ).join('');
+
+  // Habilidades asignadas
+  const assignedSkills = ALL_SKILLS.filter(s => setupSkills[s] > 0);
+  const skillChips = assignedSkills.length
+    ? assignedSkills.map(s => `<span class="preview-chip skill-chip">${s}: ${setupSkills[s]}</span>`).join('')
+    : '<span style="color:var(--text-dim);font-size:10px;">Ninguna asignada</span>';
+
+  const totalBase = ATTRS.reduce((sum, a) => sum + setupAttrs[a], 0);
+  const totalSkill = ALL_SKILLS.reduce((sum, s) => sum + setupSkills[s], 0);
+
+  preview.innerHTML = `
+    <div class="preview-title">◈ VISTA PREVIA — ${career.toUpperCase()} ◈ ${totalBase} ATTR · ${totalSkill} HAB</div>
+    <div class="preview-row">${attrChips}</div>
+    <div class="preview-row" style="margin-top:4px;">${skillChips}</div>
+  `;
+}
+
 function buildAttackTable() {
   const table = document.getElementById('attack-table');
   XENO_ATTACKS.forEach(a => {
@@ -1242,78 +1868,224 @@ function useItem(index) {
   }
 }
 
-// ══ SISTEMA DE DADOS ══
+// ══ SISTEMA DE DADOS MEJORADO ══
 let dicePool = [];
+let rollHistory = [];
+let rollCount = 0;
+let lastRollWasPushed = false;
 
 function addDie(type) {
-  dicePool.push({type, value: null});
-  renderDice();
+  dicePool.push({ type, value: null });
+  updatePoolDisplay();
 }
 
-function renderDice() {
+function updatePoolDisplay() {
   const area = document.getElementById('dice-area');
+  const label = document.getElementById('pool-label');
   area.innerHTML = '';
-  dicePool.forEach((die, i) => {
+  const base = dicePool.filter(d => d.type === 'base').length;
+  const stress = dicePool.filter(d => d.type === 'stress').length;
+  label.textContent = `Pool: ${dicePool.length} dado${dicePool.length !== 1 ? 's' : ''} (${base} base + ${stress} estrés)`;
+  dicePool.forEach(die => {
     const el = document.createElement('div');
-    el.className = 'die' + (die.type === 'stress' ? ' push' : '');
-    el.innerHTML = die.value !== null ? die.value : (die.type === 'stress' ? '⚠' : '?');
+    el.className = 'die' + (die.type === 'stress' ? ' stress-idle' : '');
+    el.innerHTML = die.value !== null ? `<span class="rd-num">${die.value}</span>` : (die.type === 'stress' ? '<span style="font-size:14px">☠</span>' : '<span style="font-size:14px">?</span>');
     el.innerHTML += `<span class="die-label">${die.type === 'stress' ? 'EST' : 'BASE'}</span>`;
     area.appendChild(el);
   });
 }
 
-function rollAllDice() {
-  if (dicePool.length === 0) { addDie('base'); }
+// ── Tirada Rápida: Atributo + Habilidad ──
+function quickRoll() {
+  const attrKey = document.getElementById('quick-attr').value;
+  const skillVal = parseInt(document.getElementById('quick-skill').value) || 0;
+  const stressVal = parseInt(document.getElementById('quick-stress').value) || 0;
 
-  let successes = 0;
-  let panicDie = false;
-
-  dicePool.forEach(die => {
-    die.value = Math.ceil(Math.random() * 6);
-    if (die.value === 6) successes++;
-    if (die.type === 'stress' && die.value === 1) panicDie = true;
-  });
-
-  renderDiceWithAnimation();
-
-  const resultEl = document.getElementById('roll-result');
-  let html = `<strong style="color:var(--green)">ÉXITOS: ${successes}</strong> | `;
-  html += dicePool.map(d => {
-    let cls = d.value === 6 ? 'color:var(--green)' : d.type === 'stress' && d.value === 1 ? 'color:var(--red)' : 'color:var(--text-dim)';
-    return `<span style="${cls}">[${d.value}]</span>`;
-  }).join(' ');
-
-  if (panicDie) {
-    html += `<br><span style="color:var(--red)">☠ SÍMBOLO ALIEN — ¡SE REQUIERE CHEQUEO DE PÁNICO!</span>`;
-    GS.stressLevel = Math.min(GS.maxStress, GS.stressLevel + 1);
-    updateStress();
+  if (!attrKey && skillVal === 0 && stressVal === 0) {
+    addMessage('system', 'Selecciona al menos un atributo o habilidad para la tirada rápida.');
+    return;
   }
 
-  if (successes === 0) {
-    html += `<br><span style="color:var(--text-dim)">Sin éxitos. Puedes FORZAR la tirada una vez.</span>`;
+  dicePool = [];
+  let attrVal = 0;
+
+  if (attrKey && GS.char) {
+    attrVal = GS.char.attrs[attrKey] || 0;
+  } else if (attrKey) {
+    attrVal = 2; // fallback antes de que empiece el juego
+  }
+
+  const totalBase = attrVal + skillVal;
+  for (let i = 0; i < totalBase; i++) dicePool.push({ type: 'base', value: null });
+  for (let i = 0; i < stressVal; i++) dicePool.push({ type: 'stress', value: null });
+
+  const attrName = attrKey ? `${attrKey}(${attrVal})` : '';
+  const skillName = skillVal > 0 ? `+HAB(${skillVal})` : '';
+  const stressName = stressVal > 0 ? `+ESTR(${stressVal})` : '';
+  const desc = [attrName, skillName, stressName].filter(Boolean).join(' ');
+
+  addMessage('system', `Preparando tirada: ${desc} → ${dicePool.length} dado${dicePool.length !== 1 ? 's' : ''} en el pool`);
+  updatePoolDisplay();
+  rollAllDice(desc);
+}
+
+// ── Tirar todos los dados ──
+function rollAllDice(label) {
+  if (dicePool.length === 0) { addDie('base'); }
+
+  lastRollWasPushed = false;
+  rollCount++;
+
+  // Animar brevemente, luego mostrar resultado
+  dicePool.forEach(die => {
+    die.value = Math.ceil(Math.random() * 6);
+  });
+
+  // Pequeña animación antes de mostrar
+  animateDiceRoll(() => showRollResult(label || 'Tirada manual', false));
+}
+
+function animateDiceRoll(callback) {
+  const area = document.getElementById('dice-area');
+  area.innerHTML = '';
+  // Mostrar dados girando
+  dicePool.forEach(die => {
+    const el = document.createElement('div');
+    el.className = 'die rolling' + (die.type === 'stress' ? ' stress-idle' : '');
+    el.innerHTML = `<span class="rd-num">${Math.ceil(Math.random()*6)}</span>`;
+    el.innerHTML += `<span class="die-label">${die.type === 'stress' ? 'EST' : 'BASE'}</span>`;
+    area.appendChild(el);
+  });
+  setTimeout(() => {
+    updatePoolDisplay();
+    if (callback) callback();
+  }, 550);
+}
+
+function showRollResult(label, isPushed) {
+  const successes = dicePool.filter(d => d.value === 6).length;
+  const panicDie = dicePool.some(d => d.type === 'stress' && d.value === 1);
+  const hasStress = dicePool.some(d => d.type === 'stress');
+
+  GS.lastRoll = { successes, panicDie, pushed: isPushed, dice: dicePool.map(d => ({...d})) };
+
+  // Mostrar caja de resultado
+  const box = document.getElementById('roll-result-box');
+  box.style.display = 'block';
+
+  // Cabecera
+  const succEl = document.getElementById('rr-successes');
+  const lbl = document.getElementById('rr-label');
+  lbl.textContent = isPushed ? '¡FORZADO! — ' + label : label;
+
+  if (panicDie) {
+    succEl.textContent = `${successes} ÉXITO${successes !== 1 ? 'S' : ''} — ☠ PÁNICO`;
+    succEl.className = 'rr-successes panic';
+  } else if (successes === 0) {
+    succEl.textContent = 'SIN ÉXITOS';
+    succEl.className = 'rr-successes zero';
+  } else if (isPushed) {
+    succEl.textContent = `${successes} ÉXITO${successes !== 1 ? 'S' : ''}`;
+    succEl.className = 'rr-successes pushed';
+  } else {
+    succEl.textContent = `${successes} ÉXITO${successes !== 1 ? 'S' : ''}`;
+    succEl.className = 'rr-successes';
+  }
+
+  // Dados individuales
+  const diceRow = document.getElementById('rr-dice-row');
+  diceRow.innerHTML = '';
+  dicePool.forEach(die => {
+    const el = document.createElement('div');
+    const isSuccess = die.value === 6;
+    const isPanicSymbol = die.type === 'stress' && die.value === 1;
+    const isStress = die.type === 'stress';
+
+    if (isPanicSymbol) el.className = 'result-die rd-panic';
+    else if (isSuccess) el.className = 'result-die rd-success';
+    else if (isStress) el.className = 'result-die rd-stress-ok';
+    else el.className = 'result-die rd-fail';
+
+    el.innerHTML = `
+      <span class="rd-num">${isPanicSymbol ? '☠' : die.value}</span>
+      <span class="rd-lbl">${isStress ? 'ESTRÉS' : 'BASE'}</span>
+    `;
+    if (isSuccess) {
+      // Añadir ✦ arriba
+      const star = document.createElement('div');
+      star.style.cssText = 'position:absolute;top:-8px;left:50%;transform:translateX(-50%);color:var(--green);font-size:12px;';
+      star.textContent = '✦';
+      el.style.position = 'relative';
+      el.appendChild(star);
+    }
+    diceRow.appendChild(el);
+  });
+
+  // Veredicto
+  const verdict = document.getElementById('rr-verdict');
+  if (panicDie) {
+    verdict.textContent = '☠ ¡SÍMBOLO ALIEN! — CHEQUEO DE PÁNICO OBLIGATORIO';
+    verdict.className = 'rr-verdict v-panic';
+  } else if (successes >= 3) {
+    verdict.textContent = `✦ ÉXITO EXCEPCIONAL — ${successes} éxitos`;
+    verdict.className = 'rr-verdict v-success';
+  } else if (successes > 0) {
+    verdict.textContent = `✦ ÉXITO — La acción se completa`;
+    verdict.className = 'rr-verdict v-success';
+  } else if (isPushed) {
+    verdict.textContent = '✕ FRACASO — Incluso forzando la tirada ha fallado';
+    verdict.className = 'rr-verdict v-fail';
+  } else {
+    verdict.textContent = '✕ FRACASO — Puedes FORZAR la tirada (↑ FORZAR)';
+    verdict.className = 'rr-verdict v-fail';
+  }
+
+  // Detalle
+  const detail = document.getElementById('rr-detail');
+  let detailLines = [];
+  const baseResults = dicePool.filter(d => d.type === 'base').map(d => d.value);
+  const stressResults = dicePool.filter(d => d.type === 'stress').map(d => d.value);
+
+  if (baseResults.length) detailLines.push(`Dados base: [${baseResults.join('] [')}] → ${baseResults.filter(v=>v===6).length} éxito${baseResults.filter(v=>v===6).length !== 1 ? 's' : ''}`);
+  if (stressResults.length) {
+    const panicCount = stressResults.filter(v => v === 1).length;
+    detailLines.push(`Dados estrés: [${stressResults.join('] [')}] → ${stressResults.filter(v=>v===6).length} éxito${stressResults.filter(v=>v===6).length !== 1 ? 's' : ''}${panicCount > 0 ? ` + ☠ PÁNICO` : ''}`);
+  }
+  if (isPushed) detailLines.push('⚡ Tirada forzada — Estrés +1');
+  if (panicDie) detailLines.push('⚠ Consulta la Tabla de Pánico ahora');
+
+  detail.innerHTML = detailLines.join('<br>');
+
+  // Botón Forzar
+  if (successes === 0 && !panicDie && !isPushed) {
     document.getElementById('push-btn').style.display = 'inline-block';
   } else {
     document.getElementById('push-btn').style.display = 'none';
   }
 
-  GS.lastRoll = { successes, panicDie, dice: dicePool.map(d => d.value) };
-  resultEl.innerHTML = html;
+  // Efectos automáticos
+  if (panicDie) {
+    GS.stressLevel = Math.min(GS.maxStress, GS.stressLevel + 1);
+    updateStress();
+  }
+
+  // Agregar al historial
+  addToHistory(label, successes, panicDie, isPushed, dicePool);
+
+  // Enviar al log de MOTHER
+  const logLine = buildMotherLogLine(label, successes, panicDie, isPushed);
+  addMessage('system', logLine);
 }
 
-function renderDiceWithAnimation() {
-  const area = document.getElementById('dice-area');
-  area.innerHTML = '';
-  dicePool.forEach(die => {
-    const el = document.createElement('div');
-    el.className = 'die rolling' + (die.type === 'stress' ? ' push' : '');
-    if (die.value === 6) el.classList.add('success');
-    if (die.type === 'stress' && die.value === 1) el.classList.add('alien');
-    el.textContent = die.value;
-    el.innerHTML += `<span class="die-label">${die.type === 'stress' ? 'EST' : 'BASE'}</span>`;
-    area.appendChild(el);
-  });
+function buildMotherLogLine(label, successes, panicDie, isPushed) {
+  let line = `[TIRADA] ${label} → ${dicePool.length} dado${dicePool.length !== 1 ? 's' : ''}`;
+  if (isPushed) line += ' (FORZADO)';
+  line += ` → ${successes} éxito${successes !== 1 ? 's' : ''}`;
+  if (panicDie) line += ' ☠ PÁNICO';
+  return line;
 }
 
+// ── Forzar tirada ──
 function pushRoll() {
   dicePool.forEach(die => {
     if (die.value !== 6) die.value = Math.ceil(Math.random() * 6);
@@ -1321,28 +2093,68 @@ function pushRoll() {
   GS.stressLevel = Math.min(GS.maxStress, GS.stressLevel + 1);
   updateStress();
   document.getElementById('push-btn').style.display = 'none';
-  renderDiceWithAnimation();
+  lastRollWasPushed = true;
 
-  let successes = dicePool.filter(d => d.value === 6).length;
-  let panicDie = dicePool.some(d => d.type === 'stress' && d.value === 1);
-
-  const resultEl = document.getElementById('roll-result');
-  let html = `<strong style="color:var(--amber)">¡FORZADO! ÉXITOS: ${successes}</strong> | `;
-  html += dicePool.map(d => {
-    let cls = d.value === 6 ? 'color:var(--green)' : d.type === 'stress' && d.value === 1 ? 'color:var(--red)' : 'color:var(--text-dim)';
-    return `<span style="${cls}">[${d.value}]</span>`;
-  }).join(' ');
-  html += `<br><span style="color:var(--amber)">El estrés aumenta en 1 por forzar la tirada.</span>`;
-  if (panicDie) html += `<br><span style="color:var(--red)">☠ PÁNICO — ¡Consulta la Tabla de Pánico!</span>`;
-  resultEl.innerHTML = html;
-  GS.lastRoll = { successes, panicDie, pushed: true };
+  animateDiceRoll(() => showRollResult('Tirada forzada', true));
 }
 
+// ── Limpiar ──
 function clearDice() {
   dicePool = [];
   document.getElementById('dice-area').innerHTML = '';
-  document.getElementById('roll-result').textContent = 'No se han tirado dados.';
+  document.getElementById('pool-label').textContent = 'Pool: 0 dados';
+  document.getElementById('roll-result-box').style.display = 'none';
   document.getElementById('push-btn').style.display = 'none';
+  // Reset selects
+  document.getElementById('quick-attr').value = '';
+  document.getElementById('quick-skill').value = '0';
+  document.getElementById('quick-stress').value = '0';
+}
+
+// ── Historial ──
+function addToHistory(label, successes, panicDie, isPushed, pool) {
+  rollHistory.unshift({ label, successes, panicDie, isPushed, pool: pool.map(d=>({...d})), turn: GS.turnCount });
+  renderHistory();
+}
+
+function renderHistory() {
+  const hist = document.getElementById('dice-history');
+  if (!rollHistory.length) {
+    hist.innerHTML = '<div style="color:var(--text-dim);font-size:11px;text-align:center;padding:10px;">Sin tiradas aún.</div>';
+    return;
+  }
+  hist.innerHTML = '';
+  rollHistory.slice(0, 15).forEach(r => {
+    const entry = document.createElement('div');
+    entry.className = 'history-entry';
+
+    const diceStr = r.pool.map(d => {
+      const sym = d.type === 'stress' && d.value === 1 ? '☠' : d.value;
+      return `[${sym}]`;
+    }).join('');
+
+    let resClass = 'hr-fail';
+    let resText = '0✕';
+    if (r.panicDie) { resClass = 'hr-panic'; resText = '☠PÁN'; }
+    else if (r.successes > 0 && r.isPushed) { resClass = 'hr-push'; resText = `${r.successes}✦F`; }
+    else if (r.successes > 0) { resClass = 'hr-success'; resText = `${r.successes}✦`; }
+
+    let tags = '';
+    if (r.panicDie) tags += '<span class="he-tag panic">PÁNICO</span>';
+    else if (r.isPushed) tags += '<span class="he-tag pushed">FORZADO</span>';
+
+    entry.innerHTML = `
+      <span class="he-turn">T${r.turn}</span>
+      <span class="he-dice" title="${diceStr}">${diceStr.length > 30 ? diceStr.substring(0,28)+'…' : diceStr}</span>
+      <span class="he-result ${resClass}">${resText}${tags}</span>
+    `;
+    hist.appendChild(entry);
+  });
+}
+
+function clearHistory() {
+  rollHistory = [];
+  renderHistory();
 }
 
 // ══ ATAQUE XENOMORFO ══
